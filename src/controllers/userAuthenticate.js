@@ -3,6 +3,7 @@ const User = require("../models/users")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const redisClient = require("../config/redis")
+const crypto = require("crypto");
 // const Submission = require("../models/Submission")
 
 const register = async (req, res) => {
@@ -124,7 +125,7 @@ const adminRegister = async (req, res) => {
 
         await validUser(req.body);
         req.body.password = await bcrypt.hash(req.body.password, 10)
-        
+
         const people = await User.create(req.body);
 
         const token = jwt.sign({ _id: people._id, role: people.role, emailId: people.emailId }, process.env.JWT_KEY, { expiresIn: "1d" })
@@ -155,5 +156,96 @@ const deleteProfile = async (req, res) => {
     }
 }
 
+const changePassword = async (req, res) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
 
-module.exports = { register, login, getProfile, logout, adminRegister, deleteProfile }
+        const people = await User.findById(req.result._id);
+        if (!people) throw new Error("user not found");
+
+        const isAllowed = await bcrypt.compare(oldPassword, people.password);
+        if (!isAllowed) throw new Error("Old password is incorrect");
+
+        people.password = await bcrypt.hash(newPassword, 10);
+        await people.save();
+
+        res.status(200).send("Password changed successfully");
+    } catch (err) {
+        res.status(400).send("Error " + err)
+    }
+}
+
+const forgetPassword = async (req, res) => {
+    try {
+        const { emailId } = req.body;
+
+        const people = await User.findOne({ emailId });
+        if (!people) {
+            return res.status(200).send("If email exists, reset link sent");
+        }
+
+        const resetToken = crypto.randomBytes(32).toString("hex");
+
+        people.resetPasswordToken = crypto
+            .createHash("sha256")
+            .update(resetToken)
+            .digest("hex");
+
+       people.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
+
+
+        await people.save();
+
+        // send email here
+        console.log(`Reset URL: http://localhost:3000/reset-password/${resetToken}`);
+        console.log("RAW TOKEN:", resetToken);
+console.log("HASHED TOKEN:", people.resetPasswordToken);
+console.log("EXPIRES AT:", people.resetPasswordExpire);
+
+
+        res.status(200).send("Reset password link sent to email");
+    } catch (err) {
+        res.status(400).send("Error " + err.message);
+    }
+
+}
+
+const resetPassword = async (req, res) => {
+    try {
+        console.log("INCOMING TOKEN:", req.params.token);
+
+        // hash incoming token
+        const resetToken = crypto
+            .createHash("sha256")
+            .update(req.params.token)
+            .digest("hex");
+
+        console.log("HASHED INCOMING TOKEN:", resetToken);
+
+        // find user with matching token and unexpired
+        const people = await User.findOne({
+            resetPasswordToken: resetToken,
+            resetPasswordExpire: { $gt: new Date() } // ensure Date type
+        });
+
+        if (!people) throw new Error("Invalid or expired token");
+
+        // hash new password
+        people.password = await bcrypt.hash(req.body.password, 10);
+
+        // clear reset token fields
+        people.resetPasswordToken = undefined;
+        people.resetPasswordExpire = undefined;
+
+        await people.save();
+
+        res.status(200).send("Password reset successfully");
+    } catch (err) {
+        res.status(400).send("Error " + err.message);
+    }
+};
+
+
+
+
+module.exports = { register, login, getProfile, logout, adminRegister, deleteProfile, changePassword ,forgetPassword ,resetPassword}

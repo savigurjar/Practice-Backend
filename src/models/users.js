@@ -25,7 +25,7 @@ const userSchema = new Schema({
         default: 'user'
     },
     emailId: {
-         type: String,
+        type: String,
         required: true,
         unique: true,
         trim: true,
@@ -37,6 +37,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    resetPasswordExpire: {
+        type: Date
+    },
+
     problemSolved: {
         type: [String],
     },
