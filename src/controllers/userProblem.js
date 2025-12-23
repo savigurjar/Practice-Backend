@@ -182,9 +182,131 @@ const updateProblem = async (req, res) => {
 
 
     } catch (err) {
-        console.error("CREATE PROBLEM ERROR:", err);
+
         res.status(500).json({ error: err.message });
     }
 }
 
-module.exports = { createProblem, updateProblem };
+const deleteProblem = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        if (!id) return res.status(400).send("ID is missing");
+
+        // problem present h ya nhi
+        const DsaProblem = await Problem.findById(id);
+        if (!DsaProblem) return res.status(400).send("ID is not present in server")
+
+        const deleteProblem = await Problem.findByIdAndDelete(id)
+
+        if (!deleteProblem) return res.status(404).send("Problem is missing");
+
+
+
+        res.status(200).send("Problem deleted Successfully")
+
+    } catch (err) {
+
+        res.status(500).json({ error: err.message });
+    }
+}
+
+const getProblemById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!id) return res.status(400).send("Id is missing");
+
+        const dsaProblem = await Problem.findById(id).select('_id title description difficulty tags visibleTestCases startCode referenceSolution isPremium points ');
+
+        if (!dsaProblem) return res.status(400).send("Problem is missing");
+
+
+        res.status(200).json({
+            message: "Problem found successfully",
+            problem: dsaProblem
+        })
+
+
+    } catch (err) {
+
+        res.status(500).json({ error: err.message });
+    }
+}
+
+const getAllProblem = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const {
+            difficulty,
+            tags,
+            isPremium,
+            companies,
+            minPoints,
+            maxPoints
+        } = req.query;
+
+        // 🔹 Build dynamic filter
+        let filter = {};
+
+        if (difficulty) {
+            filter.difficulty = difficulty;
+        }
+
+        if (tags) {
+            // tags=array,sorting
+            filter.tags = { $in: tags.split(",") };
+        }
+
+        if (isPremium !== undefined) {
+            filter.isPremium = isPremium === "true";
+        }
+
+        if (companies) {
+            filter.companies = { $in: companies.split(",") };
+        }
+
+        if (minPoints || maxPoints) {
+            filter.points = {};
+            if (minPoints) filter.points.$gte = Number(minPoints);
+            if (maxPoints) filter.points.$lte = Number(maxPoints);
+        }
+
+        const totalProblems = await Problem.countDocuments(filter);
+
+        if (totalProblems === 0) {
+            return res.status(404).send("No problems found");
+        }
+
+        const problems = await Problem.find(filter)
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 });
+
+        const totalPages = Math.ceil(totalProblems / limit);
+
+        res.status(200).json({
+            totalProblems,
+            currentPage: page,
+            totalPages,
+            nextPage: page < totalPages ? page + 1 : null,
+            prevPage: page > 1 ? page - 1 : null,
+            problems
+        });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+const solvedProblem = async (req, res) => {
+    try {
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+module.exports = { createProblem, updateProblem, deleteProblem, getProblemById, getAllProblem, solvedProblem };
