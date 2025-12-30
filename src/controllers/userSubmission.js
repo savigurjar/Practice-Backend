@@ -35,7 +35,7 @@ const submitCode = async (req, res) => {
         const languageId = getLanguageById(language)
         const submissions = problem.hiddenTestCases.map((testcase) => ({
             source_code: code,
-            langauge_id: languageId,
+            language_id: languageId,
             stdin: testcase.input,
             expected_output: testcase.output
         }))
@@ -115,3 +115,13 @@ const submitCode = async (req, res) => {
         res.status(500).send("Internal server error");
     }
 }
+
+const runCode = async (Req, res) => {
+    try {
+
+    } catch (err) {
+        res.status(500).send("Internal server error");
+    }
+}
+
+module.exports = { submitCode ,runCode}

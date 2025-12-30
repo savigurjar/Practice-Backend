@@ -51,7 +51,7 @@ const createProblem = async (req, res) => {
             }
             const resultToken = submitResult.map((value) => value.token);
             const testResult = await submitToken(resultToken);
-       
+
             console.log(testResult)
 
             for (const test of testResult) {
@@ -303,12 +303,15 @@ const getAllProblem = async (req, res) => {
     }
 };
 
-const solvedProblem = async (req, res) => {
+const solvedProblemByUser = async (req, res) => {
     try {
+
+        const count = req.result.problemSolved.length;
+        res.status(200).send(count);
 
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 }
 
-module.exports = { createProblem, updateProblem, deleteProblem, getProblemById, getAllProblem, solvedProblem };
+module.exports = { createProblem, updateProblem, deleteProblem, getProblemById, getAllProblem, solvedProblemByUser };
