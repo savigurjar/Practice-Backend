@@ -148,7 +148,8 @@ const deleteProfile = async (req, res) => {
         // user Schema se delete 
         await User.findByIdAndDelete(userId);
         // submission schema se bhi delete
-        // await Submission.deleteMany({ userId })
+        await Submission.deleteMany({ userId })
+        // delete many means jha jha bhi submission me ye userid h vha ese delete kr do
 
         res.status(200).send("Profile Deleted Successfully")
     }
@@ -278,4 +279,4 @@ const getAllUsers = async (req, res) => {
 
 
 
-module.exports = { register, login, getProfile, logout, adminRegister, deleteProfile, changePassword, forgetPassword, resetPassword ,getAllUsers}
+module.exports = { register, login, getProfile, logout, adminRegister, deleteProfile, changePassword, forgetPassword, resetPassword, getAllUsers ,deleteProfile}

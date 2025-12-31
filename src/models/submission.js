@@ -50,3 +50,8 @@ const submissionSchema = new Schema({
 
 const Submission = mongoose.model("submission", submissionSchema);
 module.exports = Submission;
+
+// compound index
+// submissionSchema.index({userId:1,problemId:1})
+
+// code submit kiya userid problemid dono hogi

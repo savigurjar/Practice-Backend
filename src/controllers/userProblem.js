@@ -1,4 +1,5 @@
 const Problem = require('../models/problem');
+const User = require("../models/users")
 const { getLanguageById, submitBatch, submitToken } = require("../utils/problemUtility");
 
 const createProblem = async (req, res) => {
@@ -306,8 +307,17 @@ const getAllProblem = async (req, res) => {
 const solvedProblemByUser = async (req, res) => {
     try {
 
-        const count = req.result.problemSolved.length;
-        res.status(200).send(count);
+        // const count = req.result.problemSolved.length;
+        // res.status(200).send(count);
+
+        // kistype ki problem h sirf id h abhi to ,or hr ek problem le liye bar bar db call krna pdhega , esliye populate use krege kyu ki jo jis problem ko ref kr rha tha us problem ko fetch krke le aayega ref: se
+
+        const userId = req.result._id;
+        const user = await User.findById(userId).populate({ path: "problemSolved", select: "_id title difficulty tags" });
+
+        res.status(200).send(user.problemSolved)
+
+
 
     } catch (err) {
         res.status(500).json({ error: err.message });

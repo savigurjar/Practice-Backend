@@ -22,5 +22,7 @@ authRouter.post('/forgetPassword',forgetPassword);
 // authRouter.js
 authRouter.post('/resetPassword/:token', resetPassword);  // kebab-case
 authRouter.get('/admin/users', adminMiddleware, getAllUsers);
+// delete profile
+authRouter.delete('/deleteProfile',userMiddleware,deleteProfile)
 
 module.exports = authRouter;

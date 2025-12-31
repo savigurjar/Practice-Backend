@@ -116,12 +116,54 @@ const submitCode = async (req, res) => {
     }
 }
 
-const runCode = async (Req, res) => {
+const runCode = async (req, res) => {
+    // code ko run krege sirf store krne ki needni h
     try {
+        const userId = req.result._id;
+        const problemId = req.params.id;
+
+        const { code, language } = req.body;
+
+        if (!userId || !code || !problemId || !language) {
+            return res.status(400).send("Sum field are missing");
+        }
+
+        // fetch probelm from db
+        const problem = await Problem.findById(problemId);
+
+        // testcases mil jayege hidden
+
+
+        // judge0 ko code submit
+
+        const languageId = getLanguageById(language)
+        const submissions = problem.hiddenTestCases.map((testcase) => ({
+            source_code: code,
+            language_id: languageId,
+            stdin: testcase.input,
+            expected_output: testcase.output
+        }))
+
+
+        const submitResult = await submitBatch(submissions)
+
+        const resultToken = submitResult.map((value) => value.token)
+
+        const testResult = await submitToken(resultToken)
+
+        // submission update -> submmittedResult
+
+
+        // store the result in database    
+        res.status(201).json({
+            testResult
+        });
+
+
 
     } catch (err) {
         res.status(500).send("Internal server error");
     }
 }
 
-module.exports = { submitCode ,runCode}
+module.exports = { submitCode, runCode }

@@ -37,21 +37,29 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-     resetPasswordToken: {
+    resetPasswordToken: {
         type: String
     },
     resetPasswordExpire: {
         type: Date
     },
-    
+
     problemSolved: {
-       type: [{
+        type: [{
             type: Schema.Types.ObjectId,
             ref: "problem",
             unique: true
         }],
     },
 }, { timestamps: true })
+
+// pre ke bad post chelega , pure mongodb ka ye h
+userSchema.post('findOneAndDelete', async function (userInfo) {
+    if (userInfo) {
+        await mongoose.model('submission').deleteMany({ userId: userInfo._id })
+    }
+})
+
 
 const User = mongoose.model('user', userSchema);
 module.exports = User;
