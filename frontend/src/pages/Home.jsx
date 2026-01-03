@@ -1,17 +1,17 @@
-import React from 'react'
-import Header from '../Components/Header'
-import AnimatedBackground from '../animation'
+import Header from "../Components/Header";
+import Animate from "../animate";
 
-const Home = () => {
-    return (
-        <>
-            <Header />
-            <div class="w-screen h-screen bg-[conic-gradient(from_0deg,rgba(0,255,200,0.15),rgba(0,255,255,0.05),transparent,rgba(0,255,200,0.1))]">
-                <AnimatedBackground />
-            </div>
+function Home() {
+  return (
+    <div className="min-h-screen bg-white text-black dark:bg-gray-950 dark:text-white">
+      <Header />
 
-        </>
-    )
+      {/* CONTENT AREA */}
+      <div>
+        <Animate />
+      </div>
+    </div>
+  );
 }
 
-export default Home
+export default Home;
