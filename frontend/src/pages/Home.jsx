@@ -5,7 +5,7 @@ function Home() {
   return (
     <div className="min-h-screen bg-white text-black dark:bg-gray-950 dark:text-white">
       <Header />
-
+              Hello
       {/* CONTENT AREA */}
       <div>
         <Animate />

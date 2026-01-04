@@ -25,4 +25,23 @@ authRouter.get('/admin/users', adminMiddleware, getAllUsers);
 // delete profile
 authRouter.delete('/deleteProfile',userMiddleware,deleteProfile)
 
+authRouter.get("/check", userMiddleware, (req, res) => {
+    try {
+        const reply = {
+            firstName: req.result.firstName,
+            emailId: req.result.emailId,
+             role: req.result.role,
+            _id: req.result._id
+        }
+        res.status(200).json({
+            user: reply,
+            message: "Valid User" //  Fixed typo: messgae -> message
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Server error",
+            error: error.message //  Only send message, not full error object
+        });
+    }
+});
 module.exports = authRouter;
