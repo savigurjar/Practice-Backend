@@ -1,14 +1,14 @@
 // src/pages/Login.jsx
 import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, User, Shield, AlertCircle } from "lucide-react";
-import { NavLink, useNavigate } from "react-router"; 
+import { NavLink, useNavigate } from "react-router";
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import AnimatedBackground from "../animation";
-import { loginUser ,clearError} from "../features/authSlice";
+import { loginUser, clearError } from "../features/authSlice";
 
 /* ---------------- ZOD SCHEMA ---------------- */
 const loginSchema = z.object({
@@ -114,9 +114,8 @@ const Login = () => {
                   key={r}
                   type="button"
                   onClick={() => setValue("role", r)}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border transition ${
-                    role === r ? "bg-green-950 border-green-700" : "bg-black/30 border-white/20"
-                  }`}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border transition ${role === r ? "bg-green-950 border-green-700" : "bg-black/30 border-white/20"
+                    }`}
                 >
                   {r === "user" ? <User size={16} /> : <Shield size={16} />}
                   {r.charAt(0).toUpperCase() + r.slice(1)}
@@ -160,6 +159,13 @@ const Login = () => {
               Create your account
             </NavLink>
           </motion.p>
+
+          {/* Forgot password link */}
+          <motion.div variants={item} className="text-right mb-4">
+            <NavLink to="/forgot-password" className="text-sm text-green-500 hover:underline">
+              Forgot Password?
+            </NavLink>
+          </motion.div>
         </motion.form>
       </motion.div>
     </div>

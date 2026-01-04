@@ -1,11 +1,13 @@
 import { useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router"; 
+import { Routes, Route, Navigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import './App.css';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from "./pages/ForgotPassword"
+import ResetPassword from "./pages/ResetPassword";
 import { checkAuth } from "./features/authSlice";
 
 function App() {
@@ -39,6 +41,9 @@ function App() {
         path="/signup"
         element={isAuthenticated ? <Navigate to="/" /> : <Signup />}
       />
+      <Route path="forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
+
     </Routes>
   );
 }

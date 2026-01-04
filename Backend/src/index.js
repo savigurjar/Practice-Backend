@@ -1,47 +1,53 @@
+// server.js
 const express = require("express");
 const app = express();
 require("dotenv").config();
 const cors = require("cors");
-const main = require("./config/db")
+const path = require("path");
 const cookieParser = require("cookie-parser");
-const authRouter = require("./routes/userAuth")
-const redisClient = require("./config/redis")
-const problemRouter = require("./routes/problemCreator")
-const submitRouter = require("./routes/submit")
 
+// DB & Redis
+const main = require("./config/db");
+const redisClient = require("./config/redis");
+
+// Routers
+const authRouter = require("./routes/userAuth");
+const problemRouter = require("./routes/problemCreator");
+const submitRouter = require("./routes/submit");
+
+// Middleware
 app.use(cors({
-    origin:'http://localhost:5173',
-    credentials:true
-}))
-
+    origin: 'http://localhost:5173', // frontend URL
+    credentials: true,
+}));
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 
-app.use("/user", authRouter)
-app.use("/problem", problemRouter)
-app.use("/submission", submitRouter)
+// API Routes
+app.use("/user", authRouter);
+app.use("/problem", problemRouter);
+app.use("/submission", submitRouter);
 
+// Serve React frontend (for production build)
+app.use(express.static(path.join(__dirname, "client/build")));
 
-const IntializeConnection = async () => {
+// Catch-all route for React Router
+// app.get("*", (req, res) => {
+//     res.sendFile(path.resolve(__dirname, "client/build", "index.html"));
+// });
+
+// Initialize DB + Redis + Server
+const initializeConnection = async () => {
     try {
         await Promise.all([main(), redisClient.connect()]);
-
         console.log("Connected to DB and Redis");
 
         app.listen(process.env.PORT, () => {
-            console.log(`server listening at port ${process.env.PORT}`)
-        })
+            console.log(`Server listening on port ${process.env.PORT}`);
+        });
     } catch (err) {
-        console.log("Error Occured : " + err)
+        console.log("Error Occurred:", err);
     }
-}
-IntializeConnection();
+};
 
-
-// main()
-//     .then(async () => {
-//         app.listen(process.env.PORT, () => {
-//             console.log(`server listening at port ${process.env.PORT}`)
-//         })
-//     })
-//     .catch(err => console.log("Error Occurred" + err))
+initializeConnection();

@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const redisClient = require("../config/redis")
 const crypto = require("crypto");
-// const Submission = require("../models/Submission")
+
 const nodemailer = require("nodemailer");
 
 const register = async (req, res) => {
@@ -177,40 +177,112 @@ const changePassword = async (req, res) => {
     }
 }
 
-const forgetPassword = async (req, res) => {
-    try {
-        const { emailId } = req.body;
+// const forgotPassword = async (req, res) => {
+//     try {
+//         const { emailId } = req.body;
 
-        const people = await User.findOne({ emailId });
-        if (!people) {
-            return res.status(200).send("If email exists, reset link sent");
-        }
+//         const people = await User.findOne({ emailId });
+//         if (!people) {
+//             return res.status(200).send("If email exists, reset link sent");
+//         }
 
-        const resetToken = crypto.randomBytes(32).toString("hex");
+//         const resetToken = crypto.randomBytes(32).toString("hex");
 
-        people.resetPasswordToken = crypto
-            .createHash("sha256")
-            .update(resetToken)
-            .digest("hex");
+//         people.resetPasswordToken = crypto
+//             .createHash("sha256")
+//             .update(resetToken)
+//             .digest("hex");
 
-        people.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
-
-
-        await people.save();
-
-        // send email here
-        console.log(`Reset URL: http://localhost:3000/reset-password/${resetToken}`);
-        console.log("RAW TOKEN:", resetToken);
-        console.log("HASHED TOKEN:", people.resetPasswordToken);
-        console.log("EXPIRES AT:", people.resetPasswordExpire);
+//         people.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
 
 
-        res.status(200).send("Reset password link sent to email");
-    } catch (err) {
-        res.status(400).send("Error " + err.message);
+//         await people.save();
+
+//         // send email here
+//         console.log(`Reset URL: http://localhost:3000/reset-password/${resetToken}`);
+//         console.log("RAW TOKEN:", resetToken);
+//         console.log("HASHED TOKEN:", people.resetPasswordToken);
+//         console.log("EXPIRES AT:", people.resetPasswordExpire);
+
+
+//         res.status(200).send("Reset password link sent to email");
+//     } catch (err) {
+//         res.status(400).send("Error " + err.message);
+//     }
+
+// }
+
+
+
+
+
+
+require("dotenv").config();
+
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { emailId } = req.body;
+
+    const user = await User.findOne({ emailId });
+
+    if (!user) {
+      // Security: Don't reveal if email exists
+      return res.status(200).json({ message: "If email exists, reset link sent" });
     }
 
-}
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    user.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+    await user.save();
+
+    const resetURL = `http://localhost:5173/reset-password/${resetToken}`;
+
+    // Gmail transporter
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // must be true for port 465
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS, // your 16-character app password
+      },
+    });
+
+    const mailOptions = {
+      from: `"CodeClan" <${process.env.EMAIL_USER}>`,
+      to: emailId,
+      subject: "Password Reset Request",
+      html: `
+        <p>You requested a password reset</p>
+        <p>Click below to reset your password:</p>
+        <a href="${resetURL}">Reset Password</a>
+        <p>This link will expire in 10 minutes.</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "Reset link sent to your email" });
+
+  } catch (err) {
+    console.error("Forgot Password Error:", err);
+    res.status(400).json({ message: err.message });
+  }
+};
+
+
+
+
+
+
+
+
+
 
 const resetPassword = async (req, res) => {
     try {
@@ -279,4 +351,4 @@ const getAllUsers = async (req, res) => {
 
 
 
-module.exports = { register, login, getProfile, logout, adminRegister, deleteProfile, changePassword, forgetPassword, resetPassword, getAllUsers ,deleteProfile}
+module.exports = { register, login, getProfile, logout, adminRegister, deleteProfile, changePassword, forgotPassword, resetPassword, getAllUsers }
