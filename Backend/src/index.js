@@ -14,6 +14,7 @@ const redisClient = require("./config/redis");
 const authRouter = require("./routes/userAuth");
 const problemRouter = require("./routes/problemCreator");
 const submitRouter = require("./routes/submit");
+const aiRouter = require("./routes/aiChatting")
 
 // Middleware
 app.use(cors({
@@ -27,6 +28,7 @@ app.use(cookieParser());
 app.use("/user", authRouter);
 app.use("/problem", problemRouter);
 app.use("/submission", submitRouter);
+app.use("/ai",aiRouter);
 
 // Serve React frontend (for production build)
 app.use(express.static(path.join(__dirname, "client/build")));

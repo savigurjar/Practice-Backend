@@ -14,6 +14,7 @@ import Dashboard from "./Components/DashBoard/DashBoard";
 import ContestsPage from "./pages/NavLinks/Contests";
 import Admin from "./pages/admin";
 import  CreateProblem from "./Components/Admin/CreateProblem"
+import ChatAi from "./pages/NavLinks/ChatAi";
 
 function App() {
   const dispatch = useDispatch();
@@ -71,6 +72,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/problems" element={<ProblemsPage />} />
       <Route path="/contests" element={<ContestsPage />} />
+      <Route path="/chat" element={<ChatAi/>}/>
     </Routes>
   );
 }
