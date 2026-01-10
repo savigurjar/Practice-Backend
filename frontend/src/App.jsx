@@ -13,15 +13,21 @@ import ProblemsPage from "./pages/NavLinks/Problem";
 import Dashboard from "./Components/DashBoard/DashBoard";
 import ContestsPage from "./pages/NavLinks/Contests";
 import Admin from "./pages/admin";
-import CreateProblem from "./Components/Admin/CreateProblem"
+import CreateProblem from "./Components/Admin/CreateProblem";
 import UpdateProblem from "./Components/Admin/UpdateProblem";
 import ChatAi from "./pages/NavLinks/ChatAi";
+import Ask from "./pages/NavLinks/Ask";
 import ProblemPage from "./Components/ProblemIdPage/ProblemPage";
 import AdminDelete from "./Components/Admin/AdminDelete";
 import AdminVideo from "./Components/Admin/AdminVideo";
 import AdminUpload from "./Components/Admin/AdminUpload";
 import AdminUpdate from "./Components/Admin/AdminUpdate";
 import Tutorials from "./pages/NavLinks/Tutorials";
+
+// 🔥 DISCUSS IMPORTS
+import DiscussList from "./pages/Discuss/DiscussList";
+import DiscussDetails from "./pages/Discuss/DiscussDetails";
+import DiscussCreate from "./pages/Discuss/DiscussCreate";
 
 function App() {
   const dispatch = useDispatch();
@@ -60,7 +66,7 @@ function App() {
         element={isAuthenticated ? <Navigate to="/" /> : <Signup />}
       />
 
-      {/* ADMIN (PROTECTED) */}
+      {/* ADMIN */}
       <Route
         path="/admin"
         element={
@@ -71,13 +77,85 @@ function App() {
           )
         }
       />
-      <Route path="/admin/create/:id" element={isAuthenticated && user?.role === 'admin' ? <CreateProblem /> : <Navigate to="/" />} />
-      <Route path="/admin/update" element={isAuthenticated && user?.role === 'admin' ? <AdminUpdate /> : <Navigate to="/" />} />
 
+      <Route
+        path="/admin/create/:id"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <CreateProblem />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+
+      <Route
+        path="/admin/update"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <AdminUpdate />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
 
       <Route
         path="/admin/update/:id"
-        element={isAuthenticated && user?.role === 'admin' ? <UpdateProblem /> : <Navigate to="/" />}
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <UpdateProblem />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+
+      <Route
+        path="/admin/delete"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <AdminDelete />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+
+      <Route
+        path="/admin/video"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <AdminVideo />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+
+      <Route
+        path="/admin/upload/:problemId"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <AdminUpload />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+
+      {/* DISCUSS (BLOGS) */}
+      <Route path="/discuss" element={<DiscussList />} />
+      <Route path="/discuss/:id" element={<DiscussDetails />} />
+      <Route
+        path="/admin/discuss/create"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <DiscussCreate />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
       />
 
       {/* OTHER ROUTES */}
@@ -88,10 +166,8 @@ function App() {
       <Route path="/contests" element={<ContestsPage />} />
       <Route path="/tutorials" element={<Tutorials />} />
       <Route path="/chat" element={<ChatAi />} />
+      <Route path="/ask" element={<Ask />} />
       <Route path="/problem/:problemId" element={<ProblemPage />} />
-      <Route path="/admin/delete" element={isAuthenticated && user?.role === 'admin' ? <AdminDelete /> : <Navigate to="/" />} />
-      <Route path="/admin/video" element={isAuthenticated && user?.role === 'admin' ? <AdminVideo /> : <Navigate to="/" />} />
-      <Route path="/admin/upload/:problemId" element={isAuthenticated && user?.role === 'admin' ? <AdminUpload /> : <Navigate to="/" />} />
     </Routes>
   );
 }
