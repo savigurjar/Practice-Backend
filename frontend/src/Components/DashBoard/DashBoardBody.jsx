@@ -1,177 +1,182 @@
-import Animate from "../../animate";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-const stats = [
-  { label: "Problems Solved", value: "1", sub: "Total", color: "emerald" },
-  { label: "Accuracy", value: "100%", sub: "Success Rate", color: "blue" },
-  { label: "Rapid Rating", value: "1200", sub: "Intermediate", color: "purple" },
-  { label: "Contest Rating", value: "1200", sub: "Current", color: "orange" },
-];
+/* -----------------------------
+   Heatmap Cell Component
+------------------------------*/
+const HeatCell = ({ count, maxCount }) => {
+  // 0 submissions default
+  let color = "bg-gray-200 dark:bg-gray-800";
 
-const submissions = [
-  { name: "Union of Two Sorted Arrays", lang: "C++", status: "Accepted", level: "Hard", year: 2026 },
-  { name: "Binary Search Tree", lang: "Python", status: "Accepted", level: "Medium", year: 2025 },
-];
+  if (count > 0 && maxCount > 0) {
+    // Scale count to 1-4 (5 levels total including 0)
+    const intensity = Math.ceil((count / maxCount) * 4);
+
+    switch (intensity) {
+      case 1:
+        color = "bg-green-200";
+        break;
+      case 2:
+        color = "bg-green-300";
+        break;
+      case 3:
+        color = "bg-green-400";
+        break;
+      case 4:
+      default:
+        color = "bg-green-500";
+    }
+  }
+
+  return (
+    <div
+      className={`w-3 h-3 rounded-sm ${color}`}
+      title={`${count} accepted`}
+    />
+  );
+};
 
 const DashBoardBody = () => {
-  const [profile, setProfile] = useState({
-    username: "svtg361",
-    image: "",
-    bio: "Keep improving every day 🚀",
-  });
+  const [data, setData] = useState(null);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setProfile({ ...profile, image: reader.result });
-      reader.readAsDataURL(file);
-    }
-  };
+  useEffect(() => {
+    axios
+      .get("/dashboard/getDashboard", { withCredentials: true })
+      .then((res) => setData(res.data))
+      .catch((err) => console.error(err));
+  }, []);
 
-  // Group submissions by year
+  if (!data) return <p className="p-10">Loading dashboard...</p>;
+
+  const {
+    profile = {},
+    stats = { solved: 0, easy: 0, medium: 0, hard: 0 },
+    streak = 0,
+    points = 0,
+    heatmap = {},
+    recentSubmissions = [],
+    submissions = [],
+  } = data;
+
+  /* -----------------------------
+     Heatmap (last 90 days)
+  ------------------------------*/
+  const days = [];
+  for (let i = 89; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().split("T")[0];
+    days.push({ date: key, count: heatmap[key] || 0 });
+  }
+
+  const maxCount = Math.max(...days.map((d) => d.count));
+
+  /* -----------------------------
+     Submissions by Year
+  ------------------------------*/
   const submissionsByYear = submissions.reduce((acc, s) => {
-    if (!acc[s.year]) acc[s.year] = [];
-    acc[s.year].push(s);
+    const year = new Date(s.createdAt).getFullYear();
+    acc[year] = acc[year] || [];
+    acc[year].push(s);
     return acc;
   }, {});
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white text-black dark:bg-black dark:text-white">
+    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white p-8 max-w-7xl mx-auto">
 
-      {/* 🌌 Background */}
-      <div className="hidden dark:block">
-        <Animate />
+      {/* PROFILE */}
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold">
+          {profile.firstName || ""} {profile.lastName || ""}
+        </h1>
+        <p className="opacity-60">{profile.emailId || ""}</p>
+        <div className="flex gap-6 mt-4 text-sm">
+          <span>🔥 Streak: <b>{streak}</b> days</span>
+          <span>🏆 Points: <b>{points}</b></span>
+          <span>🎯 Rating: <b>{profile.rating || 1200}</b></span>
+        </div>
       </div>
 
-      {/* 📦 CONTENT */}
-      <div className="relative z-10 px-6 sm:px-10 pt-20 pb-20 max-w-7xl mx-auto">
-
-        {/* 👤 Profile Section */}
-        <div className="mb-14 flex flex-col sm:flex-row items-center gap-6">
-          <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-emerald-500">
-            {profile.image ? (
-              <img src={profile.image} alt="Profile" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-black/10 dark:bg-white/10">
-                <span className="text-black/50 dark:text-white/50">Upload</span>
-              </div>
-            )}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="absolute inset-0 opacity-0 cursor-pointer"
-            />
+      {/* STATS */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-12">
+        {[
+          ["Solved", stats.solved],
+          ["Easy", stats.easy],
+          ["Medium", stats.medium],
+          ["Hard", stats.hard],
+        ].map(([label, value]) => (
+          <div key={label} className="p-5 rounded-xl bg-black/5 dark:bg-white/5">
+            <p className="text-sm opacity-60">{label}</p>
+            <p className="text-3xl font-bold">{value}</p>
           </div>
-          <div>
-            <h1 className="text-4xl font-extrabold">
-              Welcome back, <span className="text-[#021510] dark:text-emerald-400">{profile.username}</span>
-            </h1>
-            <p className="text-black/60 dark:text-white/60 mt-2">{profile.bio}</p>
-          </div>
-        </div>
+        ))}
+      </div>
 
-        {/* 📊 Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {stats.map((s) => (
-            <div
-              key={s.label}
-              className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 
-                         rounded-xl p-6 backdrop-blur hover:scale-[1.03] transition"
-            >
-              <p className="text-sm text-black/60 dark:text-white/60">{s.label}</p>
-              <p className={`text-4xl font-extrabold mt-2 text-${s.color}-500`}>
-                {s.value}
-              </p>
-              <p className="text-xs mt-1 text-black/50 dark:text-white/50">{s.sub}</p>
-            </div>
+      {/* HEATMAP */}
+      <div className="mb-14">
+        <h2 className="text-xl font-semibold mb-4">Submission Activity</h2>
+        <div className="grid grid-rows-7 grid-flow-col gap-1">
+          {days.map((d, i) => (
+            <HeatCell key={i} count={d.count} maxCount={maxCount} />
           ))}
         </div>
+      </div>
 
-        {/* 📈 Activity + Recent Submissions */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-16">
-
-          {/* Weekly Activity */}
-          <div className="lg:col-span-2 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 
-                          rounded-xl p-6 backdrop-blur">
-            <h3 className="font-semibold mb-4">Weekly Activity</h3>
-            <div className="flex items-end gap-3 h-28">
-              {[20, 40, 10, 60, 30, 80, 25].map((h, i) => (
-                <div
-                  key={i}
-                  className="w-6 rounded bg-emerald-500/80 hover:bg-emerald-400 transition"
-                  style={{ height: `${h}%` }}
-                />
-              ))}
+      {/* RECENT SUBMISSIONS */}
+      <div className="mb-14">
+        <h2 className="text-xl font-semibold mb-4">Recent Submissions</h2>
+        {recentSubmissions.map((s) => (
+          <div
+            key={s._id}
+            className="p-4 mb-3 rounded-lg bg-black/5 dark:bg-white/5 flex justify-between"
+          >
+            <div>
+              <p className="font-medium">{s.problemId?.title || s.problem || "Unknown Problem"}</p>
+              <p className="text-xs opacity-60">
+                {s.language || "Unknown"} · {s.problemId?.difficulty || s.difficulty || "N/A"}
+              </p>
             </div>
+            <span
+              className={`font-semibold ${
+                s.status === "accepted" ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {s.status?.toUpperCase() || "N/A"}
+            </span>
           </div>
+        ))}
+      </div>
 
-          {/* Recent Submissions */}
-          <div className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 
-                          rounded-xl p-6 backdrop-blur">
-            <h3 className="font-semibold mb-4">Recent Submissions</h3>
-            {submissions.length === 0 ? (
-              <p className="text-sm text-black/50 dark:text-white/50">No submissions yet</p>
-            ) : (
-              submissions.map((s, i) => (
-                <div key={i} className="bg-black/10 dark:bg-black/40 rounded-lg p-3 mb-3">
-                  <p className="font-medium text-sm">{s.name}</p>
-                  <div className="flex justify-between mt-2 text-xs">
-                    <span className="text-black/60 dark:text-white/60">
-                      {s.lang} · {s.level}
-                    </span>
-                    <span className="text-emerald-500 font-semibold">{s.status}</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* 🗓 Submissions by Year */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-6">Submissions by Year</h2>
-          {Object.keys(submissionsByYear)
-            .sort((a, b) => b - a)
-            .map((year) => (
-              <div key={year} className="mb-8">
-                <h3 className="font-semibold mb-4">{year}</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {submissionsByYear[year].map((s, i) => (
-                    <div
-                      key={i}
-                      className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-4 backdrop-blur"
-                    >
-                      <p className="font-medium text-sm">{s.name}</p>
-                      <div className="flex justify-between mt-2 text-xs">
-                        <span className="text-black/60 dark:text-white/60">{s.lang} · {s.level}</span>
-                        <span className="text-emerald-500 font-semibold">{s.status}</span>
-                      </div>
+      {/* SUBMISSIONS BY YEAR */}
+      <div>
+        <h2 className="text-xl font-semibold mb-6">Submissions by Year</h2>
+        {Object.keys(submissionsByYear)
+          .sort((a, b) => b - a)
+          .map((year) => (
+            <div key={year} className="mb-8">
+              <h3 className="font-semibold mb-3">{year}</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {submissionsByYear[year].map((s) => (
+                  <div
+                    key={s._id}
+                    className="p-4 rounded-lg bg-black/5 dark:bg-white/5"
+                  >
+                    <p className="font-medium">{s.problemId?.title || "Unknown Problem"}</p>
+                    <div className="flex justify-between text-xs mt-2">
+                      <span>{s.language || "Unknown"}</span>
+                      <span
+                        className={
+                          s.status === "accepted" ? "text-green-500" : "text-red-500"
+                        }
+                      >
+                        {s.status || "N/A"}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            ))}
-        </div>
-
-        {/* 🏆 Leaderboard */}
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold mb-6">Leaderboard Snapshot</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {["admin", "tenperformer", "rishabh10d58"].map((u, i) => (
-              <div
-                key={u}
-                className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 
-                           rounded-xl p-5 backdrop-blur flex justify-between"
-              >
-                <span className="font-medium">#{i + 1} {u}</span>
-                <span className="text-emerald-400 font-semibold">1200</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
+            </div>
+          ))}
       </div>
     </div>
   );

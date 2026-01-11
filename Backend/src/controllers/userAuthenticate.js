@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const redisClient = require("../config/redis")
 const crypto = require("crypto");
+const Submission = require("../models/submission");
 
 const nodemailer = require("nodemailer");
 

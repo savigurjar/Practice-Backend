@@ -348,7 +348,7 @@ const ProblemPage = () => {
                     {/* CODE */}
                     {activeRightTab === "code" && (
                         <>
-                            <div className="p-4 flex gap-2 border-b border-black/10 dark:border-white/10">
+                            <div className="p-2 flex gap-2 border-b border-black/10 dark:border-white/10">
                                 {Object.keys(langMap).map((lang) => (
                                     <button
                                         key={lang}
