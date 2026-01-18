@@ -18,7 +18,7 @@ const createDiscussion = async (req, res) => {
     await discussion.save();
     
     // Populate author info
-    await discussion.populate("author", "firstName lastName emailId");
+    await discussion.populate("author", "firstName emailId");
     
     // Calculate score
     const discussionObj = discussion.toObject();

@@ -1,6 +1,6 @@
 // Add these validation functions to your existing validator.js
 
-const validateDiscussion = (data) => {
+const validateDiscussion = async (data) => {
   const errors = [];
 
   if (!data.title || data.title.trim().length < 5) {
