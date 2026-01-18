@@ -1,5 +1,21 @@
+
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+
+const streakDaySchema = new Schema({
+  date: {
+    type: Date,
+    required: true
+  },
+  problemCount: {
+    type: Number,
+    default: 0
+  },
+  problemsSolved: [{
+    type: Schema.Types.ObjectId,
+    ref: "problem"
+  }]
+});
 
 const userSchema = new Schema({
     firstName: {
@@ -10,7 +26,6 @@ const userSchema = new Schema({
     },
     lastName: {
         type: String,
-
         minLength: 3,
         maxLength: 20
     },
@@ -70,6 +85,24 @@ const userSchema = new Schema({
         }],
         default: []
     },
+    
+    // NEW FIELDS FOR DASHBOARD STATS
+    totalPoints: {
+        type: Number,
+        default: 0
+    },
+    currentStreak: {
+        type: Number,
+        default: 0
+    },
+    maxStreak: {
+        type: Number,
+        default: 0
+    },
+    lastActiveDate: {
+        type: Date
+    },
+    streakHistory: [streakDaySchema]
 
 }, { timestamps: true })
 

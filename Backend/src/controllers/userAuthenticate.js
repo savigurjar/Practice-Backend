@@ -1,3 +1,5 @@
+// [file name]: userAuthenticate.js
+// [file content begin]
 const validUser = require("../utils/validator")
 const User = require("../models/users")
 const bcrypt = require("bcrypt")
@@ -84,7 +86,24 @@ const login = async (req, res) => {
 
 const getProfile = async (req, res) => {
     try {
-        res.status(200).send(req.result)
+        // Include stats in profile response
+        const user = req.result;
+        const reply = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            age: user.age,
+            emailId: user.emailId,
+            role: user.role,
+            socialProfiles: user.socialProfiles,
+            currentStreak: user.currentStreak || 0,
+            maxStreak: user.maxStreak || 0,
+            totalPoints: user.totalPoints || 0,
+            problemSolved: user.problemSolved || [],
+             streakHistory: user.streakHistory || [],
+            _id: user._id
+        };
+        
+        res.status(200).json(reply);
     }
     catch (err) {
         res.status(400).send("Error " + err)
@@ -237,15 +256,6 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
-
-
-
 const resetPassword = async (req, res) => {
     try {
         console.log("INCOMING TOKEN:", req.params.token);
@@ -280,6 +290,7 @@ const resetPassword = async (req, res) => {
         res.status(400).send("Error " + err.message);
     }
 };
+
 const updateProfile = async (req, res) => {
   try {
     const userId = req.result._id;
@@ -325,8 +336,6 @@ const updateProfile = async (req, res) => {
   }
 };
 
-
-
 const getAllUsers = async (req, res) => {
     try {
         // Pagination query params (default: page 1, limit 10)
@@ -355,8 +364,5 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-
-
-
-
-module.exports = { register, login, getProfile, logout, adminRegister,updateProfile, deleteProfile, changePassword, forgotPassword, resetPassword, getAllUsers }
+module.exports = { register, login, getProfile, logout, adminRegister, updateProfile, deleteProfile, changePassword, forgotPassword, resetPassword, getAllUsers }
+// [file content end]

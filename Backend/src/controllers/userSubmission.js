@@ -1,7 +1,8 @@
+
 const Problem = require("../models/problem");
 const Submission = require("../models/submission")
+const User = require("../models/users");
 const { getLanguageById, submitBatch, submitToken } = require("../utils/problemUtility")
-
 
 const submitCode = async (req, res) => {
   try {
@@ -14,13 +15,14 @@ const submitCode = async (req, res) => {
     }
 
     const problem = await Problem.findById(problemId);
+    const user = await User.findById(userId);
 
     const submittedResult = await Submission.create({
       userId,
       problemId,
       code,
       language,
-      tesetCasesTotal: problem.hiddenTestCases.length,
+      testCasesTotal: problem.hiddenTestCases.length,
       status: "pending"
     });
 
@@ -67,14 +69,23 @@ const submitCode = async (req, res) => {
     submittedResult.memory = memory;
     await submittedResult.save();
 
-    if (!req.result.problemSolved.includes(problemId)) {
+    // UPDATE USER STATS IF PROBLEM SOLVED
+    if (status === "accepted" && !req.result.problemSolved.includes(problemId)) {
+      // Add to solved problems
       req.result.problemSolved.push(problemId);
+      
+      // Add points (100 points per problem)
+      req.result.totalPoints += 100;
+      
+      // Update streak with today's date
+      await updateUserStreak(req.result, problemId);
+      
       await req.result.save();
     }
 
     res.status(201).json({
       accepted: status === "accepted",
-      totalTestCases: submittedResult.tesetCasesTotal,
+      totalTestCases: submittedResult.testCasesTotal,
       passedTestCases: testCasesPassed,
       runtime,
       memory,
@@ -86,6 +97,78 @@ const submitCode = async (req, res) => {
   }
 };
 
+// Helper function to update streak based on schema
+const updateUserStreak = async (user, problemId) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  const lastActive = user.lastActiveDate ? new Date(user.lastActiveDate) : null;
+  let shouldIncrementStreak = false;
+
+  // Check if last activity was yesterday
+  if (lastActive) {
+    const lastActiveDate = new Date(lastActive);
+    lastActiveDate.setHours(0, 0, 0, 0);
+    
+    if (lastActiveDate.getTime() === yesterday.getTime()) {
+      // User was active yesterday, maintain streak
+      shouldIncrementStreak = true;
+    } else if (lastActiveDate.getTime() === today.getTime()) {
+      // User already active today, don't increment
+      shouldIncrementStreak = false;
+    } else {
+      // Break in streak, reset to 1
+      user.currentStreak = 1;
+      shouldIncrementStreak = false;
+    }
+  } else {
+    // First time activity
+    user.currentStreak = 1;
+    shouldIncrementStreak = false;
+  }
+  
+  if (shouldIncrementStreak) {
+    user.currentStreak += 1;
+  }
+  
+  // Update max streak if current is higher
+  if (user.currentStreak > user.maxStreak) {
+    user.maxStreak = user.currentStreak;
+  }
+  
+  // Update streak history
+  const existingEntryIndex = user.streakHistory.findIndex(entry => {
+    const entryDate = new Date(entry.date);
+    entryDate.setHours(0, 0, 0, 0);
+    return entryDate.getTime() === today.getTime();
+  });
+  
+  if (existingEntryIndex >= 0) {
+    // Update existing entry
+    user.streakHistory[existingEntryIndex].problemCount += 1;
+    if (!user.streakHistory[existingEntryIndex].problemsSolved.includes(problemId)) {
+      user.streakHistory[existingEntryIndex].problemsSolved.push(problemId);
+    }
+  } else {
+    // Add new entry
+    user.streakHistory.push({
+      date: today,
+      problemCount: 1,
+      problemsSolved: [problemId]
+    });
+  }
+  
+  // Keep only last 400 days of history (13 months)
+  if (user.streakHistory.length > 400) {
+    user.streakHistory = user.streakHistory.slice(-400);
+  }
+  
+  // Update last active date
+  user.lastActiveDate = today;
+};
 
 const runCode = async (req, res) => {
   try {
@@ -127,7 +210,5 @@ const runCode = async (req, res) => {
     res.status(500).json({ success: false, error: "Execution failed" });
   }
 };
-
-
 
 module.exports = { submitCode, runCode }

@@ -166,11 +166,12 @@ function App() {
       <Route
         path="/admin/discuss/create"
         element={
-          isAuthenticated && user?.role === "admin" ? (
-            <DiscussCreate />
-          ) : (
-            <Navigate to="/" />
-          )
+          // isAuthenticated && user?.role === "admin" ? (
+          //   <DiscussCreate />
+          // ) : (
+          //   <Navigate to="/" />
+          // )
+          <DiscussCreate />
         }
       />
 

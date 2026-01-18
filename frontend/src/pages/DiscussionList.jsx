@@ -26,7 +26,7 @@ const DiscussList = () => {
   const [filters, setFilters] = useState({
     sortBy: "newest",
     tag: "",
-    showPinned: true
+    showPinned: false,
   });
   const [pagination, setPagination] = useState({
     page: 1,

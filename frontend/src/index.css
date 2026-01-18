@@ -12,3 +12,20 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */
 }
+
+/* global.css में add करें */
+:root {
+  --fill-tertiary: #ebedf0;
+  --green-20: #9be9a8;
+  --green-40: #40c463;
+  --green-60: #30a14e;
+  --green-80: #216e39;
+}
+
+.dark {
+  --fill-tertiary: #2d333b;
+  --green-20: #0e4429;
+  --green-40: #006d32;
+  --green-60: #26a641;
+  --green-80: #39d353;
+}
