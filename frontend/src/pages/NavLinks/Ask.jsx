@@ -90,7 +90,8 @@ function Ask() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black">
+     <AppLayout>
+       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black">
         <div className="flex flex-col items-center bg-green-50 dark:bg-black/20 border border-green-200 dark:border-white/20 rounded-2xl p-8 shadow-lg">
           {/* Spinner */}
           <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-green-900 dark:border-emerald-400 mb-4"></div>
@@ -100,6 +101,7 @@ function Ask() {
           </p>
         </div>
       </div>
+     </AppLayout>
     );
   }
 

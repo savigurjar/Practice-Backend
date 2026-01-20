@@ -64,44 +64,7 @@ const ProblemPage = () => {
         fetchProblem();
     }, [problemId, selectedLanguage]);
 
-    //     useEffect(() => {
-    //     const fetchProblem = async () => {
-    //         try {
-    //             setLoading(true);
-
-    //             // Fetch the problem from backend
-    //             const res = await axiosClient.get(`/problem/getProblemById/${problemId}`);
-
-    //             // Extract the actual problem object
-    //             const data = res.data.problem;
-
-    //             if (!data) {
-    //                 console.error("Problem not found in response");
-    //                 setProblem(null);
-    //                 return;
-    //             }
-
-    //             setProblem(data);
-
-    //             // Get initial code for the selected language
-    //             const initialCode =
-    //                 data?.startCode?.find(
-    //                     (sc) => sc.language.toLowerCase() === backendLangMap[selectedLanguage]
-    //                 )?.initialCode || "";
-
-    //             setCode(initialCode);
-
-    //         } catch (err) {
-    //             console.error("Problem fetch failed:", err);
-    //             setProblem(null);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchProblem();
-    // }, [problemId, selectedLanguage]);
-
+   
 
     // Update code on language change
     useEffect(() => {
@@ -159,7 +122,8 @@ const ProblemPage = () => {
 
    if (loading) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
+   <AppLayout>
+     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="flex flex-col items-center bg-green-50 border border-green-200 rounded-2xl p-8 shadow-lg">
         {/* Spinner */}
         <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-green-900 mb-4"></div>
@@ -169,6 +133,7 @@ const ProblemPage = () => {
         </p>
       </div>
     </div>
+   </AppLayout>
   );
 }
 

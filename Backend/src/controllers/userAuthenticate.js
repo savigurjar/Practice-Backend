@@ -196,7 +196,7 @@ const forgotPassword = async (req, res) => {
     const resetToken = crypto.randomBytes(32).toString("hex");
     user.resetPasswordToken = crypto
       .createHash("sha256")
-      .update(resToken)
+      .update(resetToken) 
       .digest("hex");
     user.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
