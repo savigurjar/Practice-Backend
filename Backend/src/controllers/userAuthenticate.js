@@ -412,6 +412,38 @@ const updateUserPoints = async (userId, points = 100) => {
     console.error("Error updating user points:", err);
   }
 };
+// Add this function to get solved problems by user
+const getSolvedProblems = async (req, res) => {
+  try {
+    const userId = req.result._id;
+    
+    const user = await User.findById(userId)
+      .populate({
+        path: 'problemSolved',
+        select: 'title difficulty tags _id'
+      })
+      .select('problemSolved');
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+    
+    res.status(200).json({
+      success: true,
+      solvedProblems: user.problemSolved || []
+    });
+  } catch (err) {
+    console.error("Error fetching solved problems:", err);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching solved problems"
+    });
+  }
+};
+
 
 module.exports = { 
   register, 
@@ -426,5 +458,6 @@ module.exports = {
   resetPassword, 
   getAllUsers,
   updateUserStreak,
-  updateUserPoints 
+  updateUserPoints ,
+  getSolvedProblems
 };

@@ -573,7 +573,7 @@ const Dashboard = () => {
 
       {/* CONTENT */}
       <div className="relative z-10 px-4 sm:px-6 lg:px-8 pt-20 pb-20">
-        {/* TITLE */}
+       
         {/* TITLE */}
         <div className="max-w-7xl mx-auto mb-8">
           <h1 className="text-4xl font-extrabold text-center mb-3">
@@ -826,7 +826,7 @@ const Dashboard = () => {
               </div>
 
               {/* ENCOURAGEMENT SECTION */}
-              {stats.totalProblems === 0 && (
+              {/* {stats.totalProblems === 0 && (
                 <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-6 text-center text-white">
                   <h3 className="text-xl font-bold mb-2">Ready to Start Your Coding Journey?</h3>
                   <p className="mb-4">Solve your first problem and unlock your dashboard stats!</p>
@@ -837,7 +837,7 @@ const Dashboard = () => {
                     Browse Problems
                   </button>
                 </div>
-              )}
+              )} */}
             </div>
           )}
 

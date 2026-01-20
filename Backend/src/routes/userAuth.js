@@ -2,7 +2,7 @@
 const express = require('express');
 const authRouter = express.Router();
 const mongoose = require('mongoose'); // Add this line
-const { register, login, logout, getProfile, updateProfile, adminRegister, deleteProfile, changePassword, forgotPassword, resetPassword, getAllUsers } = require("../controllers/userAuthenticate")
+const { register, login, logout, getProfile, updateProfile,getSolvedProblems, adminRegister, deleteProfile, changePassword, forgotPassword, resetPassword, getAllUsers } = require("../controllers/userAuthenticate")
 const userMiddleware = require("../middleware/userMiddleware")
 const adminMiddleware = require("../middleware/adminMiddleware")
 
@@ -26,6 +26,7 @@ authRouter.get('/admin/users', adminMiddleware, getAllUsers);
 // delete profile
 authRouter.delete('/deleteProfile', userMiddleware, deleteProfile)
 authRouter.put("/updateProfile", userMiddleware, updateProfile);
+authRouter.get("/solved-problems", userMiddleware, getSolvedProblems);
 
 // NEW ROUTE: Get user statistics
 authRouter.get("/stats", userMiddleware, async (req, res) => {

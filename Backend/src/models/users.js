@@ -115,6 +115,14 @@ const userSchema = new Schema({
 
 }, { timestamps: true });
 
+// Add virtual for solvedProblems to match frontend
+userSchema.virtual('solvedProblems').get(function() {
+    return this.problemSolved;
+});
+
+userSchema.set('toJSON', { virtuals: true });
+userSchema.set('toObject', { virtuals: true });
+
 // Middleware to delete submissions when user is deleted
 userSchema.post('findOneAndDelete', async function (userInfo) {
     if (userInfo) {
