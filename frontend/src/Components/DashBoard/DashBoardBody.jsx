@@ -74,6 +74,30 @@ const forgotPasswordSchema = z.object({
     .min(1, "Email is required")
 });
 
+// Helper function to get IST date string
+const getISTDate = (date = new Date()) => {
+  // Indian Standard Time is UTC+5:30
+  const istOffset = 5.5 * 60 * 60 * 1000; // 5.5 hours in milliseconds
+  const istTime = date.getTime() + istOffset;
+  return new Date(istTime);
+};
+
+// Helper function to format date as YYYY-MM-DD in IST
+const formatISTDate = (date = new Date()) => {
+  const istDate = getISTDate(date);
+  const year = istDate.getUTCFullYear();
+  const month = String(istDate.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(istDate.getUTCDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+// Helper function to parse date string and convert to IST
+const parseDateToIST = (dateString) => {
+  if (!dateString) return new Date();
+  const date = new Date(dateString);
+  return getISTDate(date);
+};
+
 const Dashboard = () => {
   // React Hook Form for profile
   const {
@@ -163,18 +187,18 @@ const Dashboard = () => {
     return [];
   };
 
-  // Generate empty calendar for last year
+  // Generate empty calendar for last year using IST
   const generateEmptyCalendar = () => {
     const calendar = [];
-    const today = new Date();
-    const startDate = new Date();
-    startDate.setDate(today.getDate() - 364); // Last year
+    const todayIST = getISTDate();
+    const startDate = new Date(todayIST);
+    startDate.setDate(todayIST.getDate() - 364); // Last year in IST
     
     for (let i = 0; i < 365; i++) {
       const date = new Date(startDate);
-      date.setDate(date.getDate() + i);
+      date.setDate(startDate.getDate() + i);
       calendar.push({
-        date: date.toISOString().split('T')[0],
+        date: formatISTDate(date),
         problemCount: 0,
         activityLevel: 0
       });
@@ -193,22 +217,24 @@ const Dashboard = () => {
     }
   };
 
-  // Generate heatmap data for the past year
+  // Generate heatmap data for the past year using IST
   const generateHeatmapData = () => {
-    const today = new Date();
+    const todayIST = getISTDate();
     const heatmapData = [];
     
-    // Create array for last 365 days
+    // Create array for last 365 days in IST
     for (let i = 364; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
-      const dateString = date.toISOString().split('T')[0];
+      const date = new Date(todayIST);
+      date.setDate(todayIST.getDate() - i);
+      const dateString = formatISTDate(date);
       
-      // Find matching day in streakHistory
+      // Find matching day in streakHistory using IST dates
       const matchingDay = stats.streakHistory.find(day => {
         if (!day || !day.date) return false;
-        const dayDate = new Date(day.date).toISOString().split('T')[0];
-        return dayDate === dateString;
+        // Compare formatted IST dates
+        const dayIST = parseDateToIST(day.date);
+        const dayDateString = formatISTDate(dayIST);
+        return dayDateString === dateString;
       });
       
       heatmapData.push({
@@ -221,9 +247,46 @@ const Dashboard = () => {
     return heatmapData;
   };
 
-  // Render SVG heatmap exactly like original
+  // Calculate month positions dynamically based on actual dates
+  const getMonthPositions = () => {
+    const todayIST = getISTDate();
+    const monthPositions = [];
+    
+    // We'll track which months we've already positioned
+    const monthsPlaced = new Set();
+    
+    // Create array for last 365 days
+    for (let i = 364; i >= 0; i--) {
+      const date = new Date(todayIST);
+      date.setDate(todayIST.getDate() - i);
+      const month = date.getMonth(); // 0 for Jan, 1 for Feb, etc.
+      const monthName = date.toLocaleString('default', { month: 'short' });
+      
+      // Calculate week number (0-based)
+      const weekNumber = Math.floor((364 - i) / 7);
+      
+      // First day of the month or if we haven't placed this month yet
+      if (date.getDate() === 1 && !monthsPlaced.has(month)) {
+        // Calculate x position (each week is 11.52 units wide)
+        const xPosition = weekNumber * 11.52;
+        
+        monthPositions.push({
+          month: monthName,
+          x: xPosition,
+          weekNumber: weekNumber
+        });
+        
+        monthsPlaced.add(month);
+      }
+    }
+    
+    return monthPositions;
+  };
+
+  // Render SVG heatmap with dynamic month positioning
   const renderSVGHeatmap = () => {
     const heatmapData = generateHeatmapData();
+    const monthPositions = getMonthPositions();
     
     return (
       <>
@@ -257,19 +320,18 @@ const Dashboard = () => {
             );
           })}
           
-          {/* Month labels - CORRECTED: use fontSize instead of font-size */}
-          <text x="41.87" y="97.9" fontSize="9px" fill="#AFB4BD">Jan</text>
-          <text x="109.66" y="97.9" fontSize="9px" fill="#AFB4BD">Feb</text>
-          <text x="177.45" y="97.9" fontSize="9px" fill="#AFB4BD">Mar</text>
-          <text x="239.48" y="97.9" fontSize="9px" fill="#AFB4BD">Apr</text>
-          <text x="301.51" y="97.9" fontSize="9px" fill="#AFB4BD">May</text>
-          <text x="363.54" y="97.9" fontSize="9px" fill="#AFB4BD">Jun</text>
-          <text x="431.33" y="97.9" fontSize="9px" fill="#AFB4BD">Jul</text>
-          <text x="499.12" y="97.9" fontSize="9px" fill="#AFB4BD">Aug</text>
-          <text x="561.15" y="97.9" fontSize="9px" fill="#AFB4BD">Sep</text>
-          <text x="628.94" y="97.9" fontSize="9px" fill="#AFB4BD">Oct</text>
-          <text x="696.73" y="97.9" fontSize="9px" fill="#AFB4BD">Nov</text>
-          <text x="752.99" y="97.9" fontSize="9px" fill="#AFB4BD">Dec</text>
+          {/* Month labels - dynamically positioned */}
+          {monthPositions.map((month, index) => (
+            <text 
+              key={index} 
+              x={month.x} 
+              y="97.9" 
+              fontSize="9px" 
+              fill="#AFB4BD"
+            >
+              {month.month}
+            </text>
+          ))}
         </svg>
         
         {/* CSS Variables for colors */}
@@ -295,9 +357,10 @@ const Dashboard = () => {
     );
   };
 
-  // Mobile SVG heatmap - CORRECTED version
+  // Mobile SVG heatmap with dynamic month positioning
   const renderMobileSVGHeatmap = () => {
     const heatmapData = generateHeatmapData();
+    const monthPositions = getMonthPositions();
     
     return (
       <div className="w-full overflow-x-auto pb-4">
@@ -330,19 +393,18 @@ const Dashboard = () => {
             );
           })}
           
-          {/* Month labels - CORRECTED: use fontSize */}
-          <text x="41.87" y="97.9" fontSize="9px" fill="#AFB4BD">Jan</text>
-          <text x="109.66" y="97.9" fontSize="9px" fill="#AFB4BD">Feb</text>
-          <text x="177.45" y="97.9" fontSize="9px" fill="#AFB4BD">Mar</text>
-          <text x="239.48" y="97.9" fontSize="9px" fill="#AFB4BD">Apr</text>
-          <text x="301.51" y="97.9" fontSize="9px" fill="#AFB4BD">May</text>
-          <text x="363.54" y="97.9" fontSize="9px" fill="#AFB4BD">Jun</text>
-          <text x="431.33" y="97.9" fontSize="9px" fill="#AFB4BD">Jul</text>
-          <text x="499.12" y="97.9" fontSize="9px" fill="#AFB4BD">Aug</text>
-          <text x="561.15" y="97.9" fontSize="9px" fill="#AFB4BD">Sep</text>
-          <text x="628.94" y="97.9" fontSize="9px" fill="#AFB4BD">Oct</text>
-          <text x="696.73" y="97.9" fontSize="9px" fill="#AFB4BD">Nov</text>
-          <text x="752.99" y="97.9" fontSize="9px" fill="#AFB4BD">Dec</text>
+          {/* Month labels - dynamically positioned */}
+          {monthPositions.map((month, index) => (
+            <text 
+              key={index} 
+              x={month.x} 
+              y="97.9" 
+              fontSize="9px" 
+              fill="#AFB4BD"
+            >
+              {month.month}
+            </text>
+          ))}
         </svg>
       </div>
     );
@@ -409,14 +471,27 @@ const Dashboard = () => {
       const solvedProblems = solvedRes.data.solvedProblems || [];
       const rankData = rankRes.data || {};
 
-      // Create calendar data
+      // Create calendar data with IST dates
       let streakHistory = [];
       if (statsData.streakHistory && Array.isArray(statsData.streakHistory) && statsData.streakHistory.length > 0) {
-        streakHistory = statsData.streakHistory.map(day => ({
-          date: day.date,
-          problemCount: day.problemCount || 0,
-          activityLevel: Math.min(day.problemCount || 0, 4)
-        }));
+        // Convert all dates to IST
+        streakHistory = statsData.streakHistory.map(day => {
+          if (!day || !day.date) {
+            return {
+              date: formatISTDate(),
+              problemCount: day?.problemCount || 0,
+              activityLevel: Math.min(day?.problemCount || 0, 4)
+            };
+          }
+          
+          // Convert date to IST
+          const dayIST = parseDateToIST(day.date);
+          return {
+            date: formatISTDate(dayIST),
+            problemCount: day.problemCount || 0,
+            activityLevel: Math.min(day.problemCount || 0, 4)
+          };
+        });
       } else {
         streakHistory = generateEmptyCalendar();
       }
@@ -443,7 +518,7 @@ const Dashboard = () => {
       console.error("Failed to load dashboard:", err);
       setError(err.response?.data?.message || "Failed to load dashboard data");
       
-      // Set fallback stats
+      // Set fallback stats with IST dates
       setStats(prev => ({
         ...prev,
         solvedProblems: ensureSolvedProblemsArray(prev.solvedProblems),
@@ -459,16 +534,19 @@ const Dashboard = () => {
   }, [fetchDashboardData]);
 
   const calculateCurrentMonthActiveDays = () => {
-    const today = new Date();
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
+    const todayIST = getISTDate();
+    const currentMonth = todayIST.getUTCMonth();
+    const currentYear = todayIST.getUTCFullYear();
 
     return stats.streakHistory.filter(day => {
       if (!day || !day.date) return false;
-      const dayDate = new Date(day.date);
-      return dayDate.getMonth() === currentMonth &&
-        dayDate.getFullYear() === currentYear &&
-        day.problemCount > 0;
+      
+      // Parse the date string (already in IST format)
+      const [year, month, dayOfMonth] = day.date.split('-').map(Number);
+      
+      return month - 1 === currentMonth && // month is 1-indexed in date string
+             year === currentYear &&
+             day.problemCount > 0;
     }).length;
   };
 
@@ -791,7 +869,7 @@ const Dashboard = () => {
               </div>
 
               {/* ACTIVITY CALENDAR - ORIGINAL STYLE */}
-              {/* <div className="mt-8">
+               <div className="mt-8">
                 <div className="bg-white/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl p-6 backdrop-blur shadow-lg">
                   <div className="flex flex-col space-y-4">
                     <div className="flex flex-col md:flex-row md:items-center md:space-y-0 space-y-2">
@@ -802,6 +880,7 @@ const Dashboard = () => {
                         <span className="md:text-base whitespace-nowrap text-gray-600 dark:text-gray-300">
                           submissions in the past year
                         </span>
+                        
                         <div className="ml-1 mr-2 text-gray-500">
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                             <path fillRule="evenodd" d="M12 11a1 1 0 011 1v4a1 1 0 11-2 0v-4a1 1 0 011-1zm0-3a1 1 0 110 2 1 1 0 010-2zm0 9C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 100-16 8 8 0 000 16z" clipRule="evenodd" />
@@ -836,19 +915,19 @@ const Dashboard = () => {
                     </div>
                     
                     {/* Desktop Heatmap */}
-                    {/* <div className="hidden md:flex h-auto w-full flex-1 items-center justify-center">
+                     <div className="hidden md:flex h-auto w-full flex-1 items-center justify-center">
                       {renderSVGHeatmap()}
                     </div>
-                     */}
+                     
                     {/* Mobile Heatmap */}
-                    {/* <div className="md:hidden flex h-auto w-full flex-1 items-center overflow-x-auto overflow-y-visible">
+                     <div className="md:hidden flex h-auto w-full flex-1 items-center overflow-x-auto overflow-y-visible">
                       <div className="pb-4">
                         {renderMobileSVGHeatmap()}
                       </div>
-                    </div> */}
+                    </div> 
 
                     {/* Legend */}
-                    {/* <div className="flex flex-wrap items-center justify-center gap-4 text-xs mt-4">
+                     <div className="flex flex-wrap items-center justify-center gap-4 text-xs mt-4">
                       <span className="text-gray-500 dark:text-gray-400">Less</span>
                       {[0, 1, 2, 3, 4].map(level => {
                         const labels = ["0", "1", "2", "3", "4+"];
@@ -865,10 +944,10 @@ const Dashboard = () => {
                         );
                       })}
                       <span className="text-gray-500 dark:text-gray-400">More</span>
-                    </div> */}
-                  {/* </div> */}
-                {/* </div> */}
-              {/* </div> */} 
+                    </div> 
+                  </div>
+                </div>
+              </div> 
             </div>
           )}
 
