@@ -3,6 +3,9 @@ import axiosClient from "../../utils/axiosClient"
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+ import { LayoutDashboard } from 'lucide-react'; 
+ import AppLayout from "../AppLayout"
+
 import {
   FiUser,
   FiGithub,
@@ -645,18 +648,45 @@ const Dashboard = () => {
     };
   };
 
- if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black">
-        <div className="flex flex-col items-center bg-green-50 dark:bg-emerald-900 border border-green-200 dark:border-emerald-700 rounded-2xl p-8 shadow-lg">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-green-900 dark:border-emerald-400 mb-4"></div>
-          <p className="text-green-900 dark:text-emerald-400 font-semibold text-lg">
-            Loading your dashboard...
-          </p>
+
+
+if (loading) {
+  return (
+   
+      <div className="relative min-h-screen overflow-hidden bg-white text-black dark:bg-black dark:text-white">
+        {/* 🌌 Animated Background (dark only) */}
+        <div className="hidden dark:block">
+          <Animate />
+        </div>
+        
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              {/* Light mode: emerald-900, Dark mode: emerald-400/30 */}
+              <div className="w-20 h-20 border-4 border-emerald-900/30 rounded-full dark:border-emerald-400/30"></div>
+              
+              {/* Light mode: emerald-900, Dark mode: emerald-400 */}
+              <div className="absolute inset-0 w-20 h-20 border-4 border-emerald-900 border-t-transparent rounded-full animate-spin dark:border-emerald-400 dark:border-t-transparent"></div>
+              
+              {/* CHANGED: Using LayoutDashboard instead of Code */}
+              <LayoutDashboard className="absolute inset-0 m-auto w-8 h-8 text-emerald-900 dark:text-emerald-400" />
+            </div>
+            
+            {/* Light mode: emerald-900, Dark mode: emerald-400 */}
+            <p className="mt-6 text-lg font-medium text-emerald-900 dark:text-emerald-400">
+              Loading dashboard...
+            </p>
+            
+            {/* Light mode: black with opacity, Dark mode: white with opacity */}
+            <p className="mt-2 text-sm text-black/60 dark:text-white/60">
+              Preparing your coding journey
+            </p>
+          </div>
         </div>
       </div>
-    );
-  }
+    
+  );
+}
 
   if (error) {
     return (

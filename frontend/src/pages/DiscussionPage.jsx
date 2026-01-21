@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router";
-import { 
-  ArrowLeft, ThumbsUp, ThumbsDown, Eye, Clock, 
-  User, Tag, Edit, Trash2, Pin, Share, 
+import {
+  ArrowLeft, ThumbsUp, ThumbsDown, Eye, Clock,
+  User, Tag, Edit, Trash2, Pin, Share,
   ArrowUp, ArrowDown, Copy, CheckCircle, XCircle,
   AlertTriangle, MoreVertical
 } from "lucide-react";
@@ -10,12 +10,13 @@ import axiosClient from "../../src/utils/axiosClient";
 import AppLayout from "../../src/Components/AppLayout";
 import Animate from "../animate"
 import { useSelector } from "react-redux";
+import { MessagesSquare } from 'lucide-react';
 
 const DiscussDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  
+
   const [discussion, setDiscussion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [voting, setVoting] = useState(false);
@@ -57,7 +58,7 @@ const DiscussDetails = () => {
     setVoting(true);
     try {
       const { data } = await axiosClient.post(`/discuss/${id}/vote`, { type });
-      
+
       setDiscussion({
         ...discussion,
         upvoteCount: data.upvoteCount,
@@ -81,12 +82,12 @@ const DiscussDetails = () => {
     setPinning(true);
     try {
       await axiosClient.post(`/discuss/${id}/pin`);
-      
+
       setDiscussion({
         ...discussion,
         isPinned: !discussion.isPinned
       });
-      
+
       alert(`Discussion ${discussion.isPinned ? "unpinned" : "pinned"}`);
     } catch (error) {
       console.error("Error pinning:", error);
@@ -136,18 +137,42 @@ const DiscussDetails = () => {
 
   if (loading) {
     return (
-     <AppLayout>
-       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black">
-        <div className="flex flex-col items-center bg-green-50 dark:bg-emerald-900 border border-green-200 dark:border-emerald-700 rounded-2xl p-8 shadow-lg">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-green-900 dark:border-emerald-400 mb-4"></div>
-          <p className="text-green-900 dark:text-emerald-400 font-semibold text-lg">
-            Loading discussion...
-          </p>
+      <AppLayout>
+        <div className="relative min-h-screen overflow-hidden bg-white text-black dark:bg-black dark:text-white">
+          {/* 🌌 Animated Background (dark only) */}
+          <div className="hidden dark:block">
+            <Animate />
+          </div>
+
+          <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+            <div className="flex flex-col items-center">
+              <div className="relative">
+                {/* Light mode: emerald-900, Dark mode: emerald-400/30 */}
+                <div className="w-20 h-20 border-4 border-emerald-900/30 rounded-full dark:border-emerald-400/30"></div>
+
+                {/* Light mode: emerald-900, Dark mode: emerald-400 */}
+                <div className="absolute inset-0 w-20 h-20 border-4 border-emerald-900 border-t-transparent rounded-full animate-spin dark:border-emerald-400 dark:border-t-transparent"></div>
+
+                {/* Light mode: emerald-900, Dark mode: emerald-400 */}
+                <MessagesSquare className="absolute inset-0 m-auto w-8 h-8 text-emerald-900 dark:text-emerald-400" />
+              </div>
+
+              {/* Light mode: emerald-900, Dark mode: emerald-400 */}
+              <p className="mt-6 text-lg font-medium text-emerald-900 dark:text-emerald-400">
+                Loading full discussion...
+              </p>
+
+              {/* Light mode: black with opacity, Dark mode: white with opacity */}
+              <p className="mt-2 text-sm text-black/60 dark:text-white/60">
+                Preparing the conversation space
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
-     </AppLayout>
+      </AppLayout>
     );
   }
+
 
   if (!discussion) {
     return (
@@ -175,14 +200,14 @@ const DiscussDetails = () => {
   return (
     <AppLayout>
       <div className="relative min-h-screen overflow-hidden bg-white text-black dark:bg-black dark:text-white">
-        
+
         {/* Background Animation */}
         <div className="hidden dark:block">
           <Animate />
         </div>
 
         <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-8 max-w-5xl mx-auto">
-          
+
           {/* Back Button */}
           <button
             onClick={() => navigate("/discuss")}
@@ -194,7 +219,7 @@ const DiscussDetails = () => {
 
           {/* Main Content */}
           <div className="bg-white/70 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-6 backdrop-blur shadow-lg">
-            
+
             {/* Header */}
             <div className="flex items-start justify-between mb-6">
               <div className="flex-1">
@@ -234,7 +259,7 @@ const DiscussDetails = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Action Buttons */}
               <div className="flex items-center gap-2">
                 <button
@@ -248,7 +273,7 @@ const DiscussDetails = () => {
                     <Share size={20} />
                   )}
                 </button>
-                
+
                 {(isAuthor || isAdmin) && (
                   <div className="relative">
                     <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -290,34 +315,32 @@ const DiscussDetails = () => {
                     <button
                       onClick={() => handleVote("upvote")}
                       disabled={voting || !isAuthenticated || discussion.author._id === user?._id}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                        discussion.userVote === "upvote"
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${discussion.userVote === "upvote"
                           ? "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300"
                           : "hover:bg-gray-100 dark:hover:bg-gray-800"
-                      } ${!isAuthenticated || discussion.author._id === user?._id ? "opacity-50 cursor-not-allowed" : ""}`}
+                        } ${!isAuthenticated || discussion.author._id === user?._id ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                       <ThumbsUp size={20} />
                       <span>{discussion.upvoteCount || 0}</span>
                     </button>
-                    
+
                     <div className={`text-2xl font-bold ${getScoreColor(discussion.score)}`}>
                       {discussion.score > 0 ? "+" : ""}{discussion.score}
                     </div>
-                    
+
                     <button
                       onClick={() => handleVote("downvote")}
                       disabled={voting || !isAuthenticated || discussion.author._id === user?._id}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                        discussion.userVote === "downvote"
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${discussion.userVote === "downvote"
                           ? "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300"
                           : "hover:bg-gray-100 dark:hover:bg-gray-800"
-                      } ${!isAuthenticated || discussion.author._id === user?._id ? "opacity-50 cursor-not-allowed" : ""}`}
+                        } ${!isAuthenticated || discussion.author._id === user?._id ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                       <ThumbsDown size={20} />
                       <span>{discussion.downvoteCount || 0}</span>
                     </button>
                   </div>
-                  
+
                   <div className="text-gray-500 dark:text-gray-400">
                     <div className="flex items-center gap-1">
                       <Eye size={16} />
@@ -332,17 +355,16 @@ const DiscussDetails = () => {
                     <button
                       onClick={handlePin}
                       disabled={pinning}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                        discussion.isPinned
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${discussion.isPinned
                           ? "bg-yellow-600 text-white hover:bg-yellow-700"
                           : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-                      }`}
+                        }`}
                     >
                       <Pin size={16} />
                       {pinning ? "..." : discussion.isPinned ? "Unpin" : "Pin"}
                     </button>
                   )}
-                  
+
                   {isAuthor && (
                     <>
                       <Link
@@ -427,7 +449,7 @@ const DiscussDetails = () => {
                     <p className="font-medium mb-1">Social Profiles:</p>
                     <div className="flex gap-2">
                       {discussion.author.socialProfiles.github && (
-                        <a href={discussion.author.socialProfiles.github} target="_blank" rel="noopener noreferrer" 
+                        <a href={discussion.author.socialProfiles.github} target="_blank" rel="noopener noreferrer"
                           className="text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400">
                           GitHub
                         </a>
