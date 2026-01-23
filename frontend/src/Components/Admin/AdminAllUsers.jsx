@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axiosClient from "../../utils/axiosClient";
 import { 
@@ -25,12 +25,24 @@ import {
   RefreshCw,
   AlertTriangle,
   AlertCircle,
-  ShieldAlert
+  ShieldAlert,
+  PlusCircle,
+  CheckCircle,
+  XCircle,
+  Save,
+  X,
+  Clock,
+  Award,
+  Activity,
+  Key,
+  Users,
+  Zap
 } from "lucide-react";
 
 const AdminAllUsers = () => {
   const navigate = useNavigate();
   
+  // Existing states
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -44,10 +56,42 @@ const AdminAllUsers = () => {
   const [deletingId, setDeletingId] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteInput, setDeleteInput] = useState("");
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // New states for create user modal
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createUserData, setCreateUserData] = useState({
+    firstName: '',
+    lastName: '',
+    emailId: '',
+    password: '',
+    age: '',
+    role: 'user'
+  });
+  const [createError, setCreateError] = useState('');
+  const [createSuccess, setCreateSuccess] = useState('');
+
+  // States for edit user modal
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editUserData, setEditUserData] = useState({
+    firstName: '',
+    lastName: '',
+    emailId: '',
+    age: '',
+    role: 'user',
+    socialProfiles: {
+      github: '',
+      linkedin: '',
+      x: '',
+      leetcode: ''
+    }
+  });
+  const [editError, setEditError] = useState('');
+  const [editSuccess, setEditSuccess] = useState('');
 
   useEffect(() => {
     fetchUsers(currentPage);
-  }, [currentPage]);
+  }, [currentPage, refreshTrigger]);
 
   const fetchUsers = async (page = 1) => {
     try {
@@ -94,6 +138,7 @@ const AdminAllUsers = () => {
       setConfirmDelete(false);
       setDeletingId(null);
       setDeleteInput("");
+      setRefreshTrigger(prev => prev + 1);
     } catch (err) {
       console.error(err);
       setError("Failed to delete user");
@@ -107,25 +152,119 @@ const AdminAllUsers = () => {
     setViewDialog(true);
   };
 
-  const handleRefresh = () => {
-    fetchUsers(currentPage);
+  const handleEditUser = (user) => {
+    setEditUserData({
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+      emailId: user.emailId || '',
+      age: user.age || '',
+      role: user.role || 'user',
+      socialProfiles: {
+        github: user.socialProfiles?.github || '',
+        linkedin: user.socialProfiles?.linkedin || '',
+        x: user.socialProfiles?.x || '',
+        leetcode: user.socialProfiles?.leetcode || ''
+      }
+    });
+    setSelectedUser(user);
+    setShowEditModal(true);
   };
 
-  const filteredUsers = users
-    .filter((user) => {
-      const query = searchQuery.toLowerCase();
-      const matchesSearch = 
-        user?.firstName?.toLowerCase().includes(query) ||
-        user?.lastName?.toLowerCase().includes(query) ||
-        user?.emailId?.toLowerCase().includes(query) ||
-        user?._id?.toLowerCase().includes(query);
+  const handleCreateUser = async () => {
+    try {
+      setCreateError('');
+      setCreateSuccess('');
       
-      const matchesRole = 
-        selectedRole === "All" || 
-        user?.role?.toLowerCase() === selectedRole.toLowerCase();
+      // Basic validation
+      if (!createUserData.firstName.trim() || !createUserData.emailId.trim() || !createUserData.password.trim()) {
+        setCreateError('Please fill in all required fields (First Name, Email, Password)');
+        return;
+      }
+
+      if (createUserData.password.length < 6) {
+        setCreateError('Password must be at least 6 characters long');
+        return;
+      }
+
+      const response = await axiosClient.post('/user/admin/register', createUserData, {
+        withCredentials: true,
+      });
+
+      if (response.status === 201) {
+        setCreateSuccess('User created successfully!');
+        // Reset form
+        setCreateUserData({
+          firstName: '',
+          lastName: '',
+          emailId: '',
+          password: '',
+          age: '',
+          role: 'user'
+        });
+        // Refresh users list
+        setRefreshTrigger(prev => prev + 1);
+        // Close modal after 2 seconds
+        setTimeout(() => {
+          setShowCreateModal(false);
+          setCreateSuccess('');
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Error creating user:', err);
+      setCreateError(err.response?.data || 'Failed to create user. Please try again.');
+    }
+  };
+
+  const handleUpdateUser = async () => {
+    try {
+      setEditError('');
+      setEditSuccess('');
       
-      return matchesSearch && matchesRole;
-    });
+      // Basic validation
+      if (!editUserData.firstName.trim() || !editUserData.emailId.trim()) {
+        setEditError('Please fill in all required fields (First Name, Email)');
+        return;
+      }
+
+      const response = await axiosClient.put(`/user/admin/users/${selectedUser._id}`, editUserData, {
+        withCredentials: true,
+      });
+
+      if (response.data.success) {
+        setEditSuccess('User updated successfully!');
+        // Refresh users list
+        setRefreshTrigger(prev => prev + 1);
+        // Close modal after 2 seconds
+        setTimeout(() => {
+          setShowEditModal(false);
+          setEditSuccess('');
+          setViewDialog(false);
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Error updating user:', err);
+      setEditError(err.response?.data?.message || 'Failed to update user. Please try again.');
+    }
+  };
+
+  const handleRefresh = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
+
+  const filteredUsers = users.filter((user) => {
+    const query = searchQuery.toLowerCase();
+    const matchesSearch = 
+      user?.firstName?.toLowerCase().includes(query) ||
+      user?.lastName?.toLowerCase().includes(query) ||
+      user?.emailId?.toLowerCase().includes(query) ||
+      user?._id?.toLowerCase().includes(query);
+    
+    const matchesRole = 
+      selectedRole === "All" || 
+      user?.role?.toLowerCase() === selectedRole.toLowerCase();
+    
+    return matchesSearch && matchesRole;
+  });
 
   const roleOptions = ["All", "Admin", "User"];
 
@@ -136,6 +275,8 @@ const AdminAllUsers = () => {
     totalRegularUsers: users.filter(u => u.role === 'user').length,
     totalProblemsSolved: users.reduce((sum, user) => sum + (user.problemSolved?.length || 0), 0),
     totalPoints: users.reduce((sum, user) => sum + (user.totalPoints || 0), 0),
+    averageStreak: users.reduce((sum, user) => sum + (user.currentStreak || 0), 0) / users.length || 0,
+    totalActiveDays: users.reduce((sum, user) => sum + (user.totalActiveDays || 0), 0),
   };
 
   if (loading) {
@@ -278,6 +419,441 @@ const AdminAllUsers = () => {
         </div>
       )}
 
+      {/* Create User Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-green-200 dark:border-green-800 max-w-md w-full p-6 shadow-xl">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                <PlusCircle className="text-green-500 dark:text-green-400" size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Create New User</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Add a new user to the system</p>
+              </div>
+            </div>
+
+            {/* Success Message */}
+            {createSuccess && (
+              <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <div className="flex items-center gap-2 text-green-800 dark:text-green-300">
+                  <CheckCircle size={18} />
+                  <span>{createSuccess}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {createError && (
+              <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <div className="flex items-center gap-2 text-red-800 dark:text-red-300">
+                  <XCircle size={18} />
+                  <span>{createError}</span>
+                </div>
+              </div>
+            )}
+
+            <form onSubmit={(e) => { e.preventDefault(); handleCreateUser(); }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                {/* First Name */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    First Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={createUserData.firstName}
+                    onChange={(e) => setCreateUserData({...createUserData, firstName: e.target.value})}
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                      rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition
+                      text-gray-900 dark:text-white"
+                    placeholder="John"
+                  />
+                </div>
+
+                {/* Last Name */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    value={createUserData.lastName}
+                    onChange={(e) => setCreateUserData({...createUserData, lastName: e.target.value})}
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                      rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition
+                      text-gray-900 dark:text-white"
+                    placeholder="Doe"
+                  />
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Email *
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <input
+                    type="email"
+                    required
+                    value={createUserData.emailId}
+                    onChange={(e) => setCreateUserData({...createUserData, emailId: e.target.value})}
+                    className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                      rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition
+                      text-gray-900 dark:text-white"
+                    placeholder="john@example.com"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Password *
+                </label>
+                <div className="relative">
+                  <Key className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <input
+                    type="password"
+                    required
+                    value={createUserData.password}
+                    onChange={(e) => setCreateUserData({...createUserData, password: e.target.value})}
+                    className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                      rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition
+                      text-gray-900 dark:text-white"
+                    placeholder="••••••••"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Password must be at least 6 characters long
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {/* Age */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Age
+                  </label>
+                  <input
+                    type="number"
+                    value={createUserData.age}
+                    onChange={(e) => setCreateUserData({...createUserData, age: e.target.value})}
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                      rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition
+                      text-gray-900 dark:text-white"
+                    min="1"
+                    max="120"
+                    placeholder="25"
+                  />
+                </div>
+
+                {/* Role */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Role
+                  </label>
+                  <select
+                    value={createUserData.role}
+                    onChange={(e) => setCreateUserData({...createUserData, role: e.target.value})}
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                      rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition
+                      text-gray-900 dark:text-white"
+                  >
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Info Box */}
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-6">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  <strong>Note:</strong> New users will start with 0 points, 0 streak, and empty problem history.
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCreateModal(false);
+                    setCreateError('');
+                    setCreateSuccess('');
+                  }}
+                  className="flex-1 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 
+                    text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors
+                    flex items-center justify-center gap-2"
+                >
+                  <PlusCircle size={18} />
+                  Create User
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit User Modal */}
+      {showEditModal && selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-blue-200 dark:border-blue-800 max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-xl">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                  <Edit className="text-blue-500 dark:text-blue-400" size={24} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Edit User</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Update user information</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* Success Message */}
+            {editSuccess && (
+              <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <div className="flex items-center gap-2 text-green-800 dark:text-green-300">
+                  <CheckCircle size={18} />
+                  <span>{editSuccess}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {editError && (
+              <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <div className="flex items-center gap-2 text-red-800 dark:text-red-300">
+                  <XCircle size={18} />
+                  <span>{editError}</span>
+                </div>
+              </div>
+            )}
+
+            <form onSubmit={(e) => { e.preventDefault(); handleUpdateUser(); }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {/* First Name */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    First Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editUserData.firstName}
+                    onChange={(e) => setEditUserData({...editUserData, firstName: e.target.value})}
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                      rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition
+                      text-gray-900 dark:text-white"
+                  />
+                </div>
+
+                {/* Last Name */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    value={editUserData.lastName}
+                    onChange={(e) => setEditUserData({...editUserData, lastName: e.target.value})}
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                      rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition
+                      text-gray-900 dark:text-white"
+                  />
+                </div>
+
+                {/* Email */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Email *
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                      type="email"
+                      required
+                      value={editUserData.emailId}
+                      onChange={(e) => setEditUserData({...editUserData, emailId: e.target.value})}
+                      className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                        rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition
+                        text-gray-900 dark:text-white"
+                    />
+                  </div>
+                </div>
+
+                {/* Age */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Age
+                  </label>
+                  <input
+                    type="number"
+                    value={editUserData.age}
+                    onChange={(e) => setEditUserData({...editUserData, age: e.target.value})}
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                      rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition
+                      text-gray-900 dark:text-white"
+                    min="1"
+                    max="120"
+                  />
+                </div>
+
+                {/* Role */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Role
+                  </label>
+                  <select
+                    value={editUserData.role}
+                    onChange={(e) => setEditUserData({...editUserData, role: e.target.value})}
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                      rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition
+                      text-gray-900 dark:text-white"
+                  >
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+
+                {/* Social Profiles */}
+                <div className="md:col-span-2">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Social Profiles</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                        GitHub
+                      </label>
+                      <div className="relative">
+                        <Github className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                        <input
+                          type="url"
+                          value={editUserData.socialProfiles.github}
+                          onChange={(e) => setEditUserData({
+                            ...editUserData,
+                            socialProfiles: {...editUserData.socialProfiles, github: e.target.value}
+                          })}
+                          className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                            rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition
+                            text-gray-900 dark:text-white text-sm"
+                          placeholder="https://github.com/username"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                        LinkedIn
+                      </label>
+                      <div className="relative">
+                        <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                        <input
+                          type="url"
+                          value={editUserData.socialProfiles.linkedin}
+                          onChange={(e) => setEditUserData({
+                            ...editUserData,
+                            socialProfiles: {...editUserData.socialProfiles, linkedin: e.target.value}
+                          })}
+                          className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                            rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition
+                            text-gray-900 dark:text-white text-sm"
+                          placeholder="https://linkedin.com/in/username"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                        Twitter/X
+                      </label>
+                      <div className="relative">
+                        <Twitter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                        <input
+                          type="url"
+                          value={editUserData.socialProfiles.x}
+                          onChange={(e) => setEditUserData({
+                            ...editUserData,
+                            socialProfiles: {...editUserData.socialProfiles, x: e.target.value}
+                          })}
+                          className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                            rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition
+                            text-gray-900 dark:text-white text-sm"
+                          placeholder="https://twitter.com/username"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                        LeetCode
+                      </label>
+                      <div className="relative">
+                        <Code className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                        <input
+                          type="url"
+                          value={editUserData.socialProfiles.leetcode}
+                          onChange={(e) => setEditUserData({
+                            ...editUserData,
+                            socialProfiles: {...editUserData.socialProfiles, leetcode: e.target.value}
+                          })}
+                          className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 
+                            rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition
+                            text-gray-900 dark:text-white text-sm"
+                          placeholder="https://leetcode.com/username"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Note */}
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-6">
+                <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                  <strong>Note:</strong> User statistics (points, streak, solved problems) cannot be edited manually.
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(false)}
+                  className="flex-1 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 
+                    text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors
+                    flex items-center justify-center gap-2"
+                >
+                  <Save size={18} />
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* User Details Modal */}
       {viewDialog && selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -306,7 +882,8 @@ const AdminAllUsers = () => {
                         {selectedUser.role === "admin" ? <Shield size={12} className="mr-1" /> : <User size={12} className="mr-1" />}
                         {selectedUser.role}
                       </span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                      <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                        <Calendar size={12} />
                         Joined: {new Date(selectedUser.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -316,7 +893,7 @@ const AdminAllUsers = () => {
                   onClick={() => setViewDialog(false)}
                   className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 >
-                  ✕
+                  <X size={24} />
                 </button>
               </div>
 
@@ -328,7 +905,7 @@ const AdminAllUsers = () => {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">User ID</label>
-                      <div className="px-3 py-2 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm font-mono text-gray-800 dark:text-gray-200">
+                      <div className="px-3 py-2 bg-gray-50 dark:bg-gray-900 rounded-lg text-sm font-mono text-gray-800 dark:text-gray-200 break-all">
                         {selectedUser._id}
                       </div>
                     </div>
@@ -387,26 +964,54 @@ const AdminAllUsers = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-900/10 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
                       <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{selectedUser.totalPoints || 0}</div>
-                      <div className="text-sm text-blue-700 dark:text-blue-300 font-medium">Total Points</div>
+                      <div className="text-sm text-blue-700 dark:text-blue-300 font-medium flex items-center gap-1">
+                        <Award size={14} />
+                        Total Points
+                      </div>
                     </div>
                     <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/10 rounded-xl p-4 border border-green-200 dark:border-green-800">
                       <div className="text-2xl font-bold text-green-600 dark:text-green-400">{selectedUser.problemSolved?.length || 0}</div>
-                      <div className="text-sm text-green-700 dark:text-green-300 font-medium">Problems Solved</div>
+                      <div className="text-sm text-green-700 dark:text-green-300 font-medium flex items-center gap-1">
+                        <Trophy size={14} />
+                        Problems Solved
+                      </div>
                     </div>
                     <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-900/10 rounded-xl p-4 border border-purple-200 dark:border-purple-800">
                       <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{selectedUser.currentStreak || 0}</div>
-                      <div className="text-sm text-purple-700 dark:text-purple-300 font-medium">Current Streak</div>
+                      <div className="text-sm text-purple-700 dark:text-purple-300 font-medium flex items-center gap-1">
+                        <Zap size={14} />
+                        Current Streak
+                      </div>
                     </div>
                     <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-900/10 rounded-xl p-4 border border-orange-200 dark:border-orange-800">
                       <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{selectedUser.maxStreak || 0}</div>
-                      <div className="text-sm text-orange-700 dark:text-orange-300 font-medium">Max Streak</div>
+                      <div className="text-sm text-orange-700 dark:text-orange-300 font-medium flex items-center gap-1">
+                        <TrendingUp size={14} />
+                        Max Streak
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Additional Stats */}
+                  <div className="mt-4 grid grid-cols-2 gap-3">
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+                      <div className="text-lg font-bold text-gray-900 dark:text-white">{selectedUser.totalActiveDays || 0}</div>
+                      <div className="text-xs text-gray-600 dark:text-gray-400">Active Days</div>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+                      <div className="text-lg font-bold text-gray-900 dark:text-white">
+                        {selectedUser.streakHistory?.length || 0}
+                      </div>
+                      <div className="text-xs text-gray-600 dark:text-gray-400">Streak Entries</div>
                     </div>
                   </div>
 
                   {/* Solved Problems */}
                   {selectedUser.problemSolved && selectedUser.problemSolved.length > 0 && (
                     <div className="mt-6">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Recently Solved Problems</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Recently Solved Problems
+                      </label>
                       <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 max-h-40 overflow-y-auto">
                         <div className="flex flex-wrap gap-1">
                           {selectedUser.problemSolved.slice(0, 10).map((problemId, index) => (
@@ -427,7 +1032,7 @@ const AdminAllUsers = () => {
               </div>
 
               {/* Actions */}
-              <div className="flex gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex flex-col sm:flex-row gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <a
                   href={`mailto:${selectedUser.emailId}`}
                   className="flex-1 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
@@ -438,7 +1043,7 @@ const AdminAllUsers = () => {
                 <button
                   onClick={() => {
                     setViewDialog(false);
-                    // Navigate to edit user page or implement edit functionality
+                    handleEditUser(selectedUser);
                   }}
                   className="flex-1 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
@@ -495,10 +1100,10 @@ const AdminAllUsers = () => {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                  <User className="text-blue-600 dark:text-blue-400" size={20} />
+                  <Users className="text-blue-600 dark:text-blue-400" size={20} />
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalUsers}</div>
@@ -507,7 +1112,7 @@ const AdminAllUsers = () => {
               </div>
             </div>
             
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
                   <Shield className="text-red-600 dark:text-red-400" size={20} />
@@ -519,7 +1124,7 @@ const AdminAllUsers = () => {
               </div>
             </div>
             
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
                   <Trophy className="text-green-600 dark:text-green-400" size={20} />
@@ -531,10 +1136,10 @@ const AdminAllUsers = () => {
               </div>
             </div>
             
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="text-purple-600 dark:text-purple-400" size={20} />
+                  <Activity className="text-purple-600 dark:text-purple-400" size={20} />
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalPoints}</div>
@@ -546,7 +1151,7 @@ const AdminAllUsers = () => {
 
           {/* Search and Filters Bar */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 mb-6 shadow-sm">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-end">
               {/* Search Input */}
               <div className="relative">
                 <Search
@@ -591,6 +1196,16 @@ const AdminAllUsers = () => {
                 <RefreshCw size={18} />
                 Refresh Users
               </button>
+
+              {/* Create New User Button */}
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="h-[44px] px-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 
+                  text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <PlusCircle size={18} />
+                Create New User
+              </button>
             </div>
           </div>
         </div>
@@ -620,7 +1235,34 @@ const AdminAllUsers = () => {
               </thead>
               
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {filteredUsers.length > 0 ? (
+                {filteredUsers.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-12 text-center">
+                      <div className="flex flex-col items-center justify-center">
+                        <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
+                          <User className="text-gray-400" size={24} />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                          No Users Found
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-300 max-w-md">
+                          {searchQuery || selectedRole !== "All" 
+                            ? "No users match your search criteria. Try adjusting your filters."
+                            : "No users found in the system."
+                          }
+                        </p>
+                        {users.length === 0 && (
+                          <button
+                            onClick={() => setShowCreateModal(true)}
+                            className="mt-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors"
+                          >
+                            Create First User
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
                   filteredUsers.map((user) => (
                     <tr 
                       key={user._id}
@@ -691,9 +1333,7 @@ const AdminAllUsers = () => {
                             View
                           </button>
                           <button
-                            onClick={() => {
-                              // Edit functionality
-                            }}
+                            onClick={() => handleEditUser(user)}
                             className="px-3 py-1.5 bg-gray-500 hover:bg-gray-600 
                               text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                           >
@@ -716,25 +1356,6 @@ const AdminAllUsers = () => {
                       </td>
                     </tr>
                   ))
-                ) : (
-                  <tr>
-                    <td colSpan="5" className="px-6 py-12 text-center">
-                      <div className="flex flex-col items-center justify-center">
-                        <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-                          <User className="text-gray-400" size={24} />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                          No Users Found
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-300 max-w-md">
-                          {searchQuery || selectedRole !== "All" 
-                            ? "No users match your search criteria. Try adjusting your filters."
-                            : "No users found in the system."
-                          }
-                        </p>
-                      </div>
-                    </td>
-                  </tr>
                 )}
               </tbody>
             </table>
@@ -827,7 +1448,7 @@ const AdminAllUsers = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5"></div>
-                  <span>Consider deactivating accounts instead of deleting for data preservation</span>
+                  <span>New users start with default statistics (0 points, 0 streak)</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5"></div>
@@ -839,12 +1460,30 @@ const AdminAllUsers = () => {
                 </li>
               </ul>
             </div>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="px-4 py-2.5 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+              >
+                <PlusCircle size={18} />
+                Create New User
+              </button>
+              <button
+                onClick={handleRefresh}
+                className="px-4 py-2.5 bg-transparent border border-gray-300 dark:border-gray-600 
+                  text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 
+                  font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+              >
+                <RefreshCw size={18} />
+                Refresh List
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Footer Note */}
         <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>👑 You are viewing and managing all user accounts in the system.</p>
+          <p>👑 You are viewing and managing all user accounts in the system. Total {totalUsers} users registered.</p>
         </div>
       </div>
     </div>
