@@ -132,11 +132,7 @@ const adminRegister = async (req, res) => {
     try {
         await validUser(req.body);
         req.body.password = await bcrypt.hash(req.body.password, 10);
-        req.body.totalPoints = 0;
-        req.body.currentStreak = 0;
-        req.body.maxStreak = 0;
-        req.body.totalActiveDays = 0;
-        req.body.streakHistory = [];
+       
 
         const people = await User.create(req.body);
 

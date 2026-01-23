@@ -1,6 +1,7 @@
 // [file name]: userAuth.js
 const express = require('express');
 const authRouter = express.Router();
+const User = require("../models/users")
 const { register, login, logout, getProfile, updateProfile,getSolvedProblems, adminRegister,getUserRank,getUserStats, deleteProfile, changePassword, forgotPassword, resetPassword, getAllUsers } = require("../controllers/userAuthenticate")
 const userMiddleware = require("../middleware/userMiddleware")
 const adminMiddleware = require("../middleware/adminMiddleware")
@@ -30,6 +31,17 @@ authRouter.get("/solved-problems", userMiddleware, getSolvedProblems);
 /// Replace the entire authRouter.get("/stats", userMiddleware, async (req, res) => { ... }) section with:
 authRouter.get("/stats", userMiddleware, getUserStats);
 authRouter.get("/rank", userMiddleware, getUserRank);
+
+// Add to userAuth.js
+authRouter.delete('/admin/users/:id', adminMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    await User.findByIdAndDelete(id);
+    res.status(200).json({ success: true, message: 'User deleted successfully' });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
 
 // Keep the check endpoint but simplify it:
 authRouter.get("/check", userMiddleware, (req, res) => {
