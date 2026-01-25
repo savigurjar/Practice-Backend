@@ -1,160 +1,3 @@
-// import { FaLaptopCode, FaGlobe, FaBolt, FaUsers } from "react-icons/fa";
-// import Animate from "../animate";
-
-// const PlatformFeaturesPage = () => {
-//   const features = [
-//     {
-//       title: "Practice Problems",
-//       icon: <FaLaptopCode size={24} />,
-//       desc: "Solve 2000+ coding problems, from beginner to expert, with step-by-step solutions.",
-//     },
-//     {
-//       title: "Global Contests",
-//       icon: <FaGlobe size={24} />,
-//       desc: "Join weekly competitions and see how you rank against coders worldwide.",
-//     },
-//     {
-//       title: "Real-time Battles",
-//       icon: <FaBolt size={24} />,
-//       desc: "Compete in live coding battles with anti-cheat protection and instant feedback.",
-//     },
-//     {
-//       title: "Community",
-//       icon: <FaUsers size={24} />,
-//       desc: "Connect with fellow developers, share solutions, and grow together.",
-//     },
-//   ];
-
-//   const stats = [
-//     { label: "Problems Solved", value: "1.2M+" },
-//     { label: "Active Users", value: "50K+" },
-//     { label: "Weekly Contests", value: "52" },
-//     { label: "Learning Paths", value: "15" },
-//   ];
-
-//   return (
-//     <div className="relative min-h-screen overflow-hidden bg-white text-black dark:bg-black dark:text-white">
-
-//       {/* 🌌 Background animation */}
-//       <div className="hidden dark:block ">
-//         <Animate />
-//       </div>
-
-//       {/* HERO */}
-//       <div className="relative px-6 sm:px-12 pt-20 pb-16 text-center">
-//         <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 text-black dark:text-white">
-//           Everything You Need to Excel
-//         </h1>
-//         <p className="text-black/70 dark:text-white/70 max-w-2xl mx-auto mb-10">
-//           Our comprehensive platform provides all the tools, challenges, and community support to help you become an exceptional programmer.
-//         </p>
-
-//         {/* STATS */}
-//         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-4xl mx-auto">
-//   {stats.map((stat) => (
-//     <div
-//       key={stat.label}
-//       className="
-//         bg-white dark:bg-white/5
-//         border border-black/10 dark:border-white/10
-//         rounded-xl p-6 text-center
-//         backdrop-blur
-//         hover:shadow-md transition
-//       "
-//     >
-//       <p className="text-2xl font-bold text-[#021510] dark:text-emerald-400">
-//         {stat.value}
-//       </p>
-//       <p className="text-sm text-black/60 dark:text-white/60">
-//         {stat.label}
-//       </p>
-//     </div>
-//   ))}
-// </div>
-
-//       </div>
-
-//       {/* FEATURE CARDS */}
-//      <div className="relative px-6 sm:px-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto mt-16">
-//   {features.map((feature) => (
-//     <div
-//       key={feature.title}
-//       className="
-//         bg-white dark:bg-white/5
-//         border border-black/10 dark:border-white/10
-//         rounded-2xl p-6
-//         backdrop-blur
-//         hover:scale-[1.03]
-//         hover:shadow-lg
-//         transition-all
-//       "
-//     >
-//       {/* Icon */}
-//       <div
-//         className="
-//           w-12 h-12 flex items-center justify-center mb-4
-//           rounded-lg
-//           bg-[#021510]/10 text-[#021510]
-//           dark:bg-emerald-500/20 dark:text-emerald-300
-//         "
-//       >
-//         {feature.icon}
-//       </div>
-
-//       <h3 className="font-semibold text-xl mb-2 text-green-950 dark:text-white">
-//         {feature.title}
-//       </h3>
-
-//       <p className="text-sm text-black/60 dark:text-white/60 mb-5">
-//         {feature.desc}
-//       </p>
-
-//       <button
-//         className="
-//           px-4 py-2 rounded-lg
-//           bg-[#021510] text-white
-//           dark:bg-emerald-600
-//           font-semibold
-//          hover:bg-[#03261d]
-//           dark:hover:bg-emerald-700
-//           transition
-//         "
-//       >
-//         Explore
-//       </button>
-//     </div>
-//   ))}
-// </div>
-
-
-//       {/* CTA */}
-//       <div className="mt-28 px-6 sm:px-12 mb-20 relative z-10">
-//         <div className="relative overflow-hidden max-w-3xl mx-auto rounded-2xl p-10 text-center bg-[#021510] text-white dark:bg-gradient-to-r dark:from-emerald-900 dark:to-emerald-950">
-//         <div className="absolute inset-0 bg-emerald-500/10 blur-3xl pointer-events-none" />
-//           <h2 className="text-3xl font-extrabold mb-4 text-white">
-//             Ready to Boost Your Programming Career?
-//           </h2>
-//           <p className="mb-6 text-white/90">
-//             Join thousands of developers practicing, competing, and learning every day.
-//           </p>
-//           <button className="
-//               px-8 py-3 rounded-lg
-//               bg-white text-[#021510]
-//               font-semibold
-//               hover:bg-emerald-100 hover:scale-105
-//               transition-all
-//             ">
-//             Start Practicing Now
-//           </button>
-//         </div>
-//       </div>
-
-//     </div>
-//   );
-// };
-
-// export default PlatformFeaturesPage;
-
 import { useState, useEffect } from "react";
 import { 
   FaLaptopCode, FaGlobe, FaBolt, FaUsers, FaChartLine, 
@@ -348,14 +191,14 @@ const PlatformFeaturesPage = () => {
       <div className="relative px-6 sm:px-12 pt-20 pb-16 text-center z-10">
         <div className="max-w-6xl mx-auto">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/20 to-blue-500/20 text-emerald-700 dark:text-emerald-300 text-sm font-medium mb-6">
-            <Zap size={16} className="fill-emerald-500" />
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/20 to-blue-500/20 text-emerald-900 dark:text-emerald-700 text-sm font-medium mb-6">
+            <Zap size={16} className="fill-emerald-900 dark:fill-emerald-700" />
             <span>Trusted by 50,000+ Developers Worldwide</span>
           </div>
 
           {/* Main Heading */}
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#021510] via-emerald-600 to-cyan-600 dark:from-white dark:via-emerald-400 dark:to-cyan-400">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-900 via-emerald-900 to-emerald-900 dark:from-white dark:via-emerald-700 dark:to-emerald-700">
               Everything You Need
             </span>
             <br />
@@ -370,7 +213,7 @@ const PlatformFeaturesPage = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <button className="group flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-[#021510] to-emerald-700 text-white font-bold hover:shadow-xl hover:scale-105 transition-all">
+            <button className="group flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-900 to-emerald-900 dark:from-emerald-700 dark:to-emerald-700 text-white font-bold hover:shadow-xl hover:scale-105 transition-all">
               <FaPlayCircle size={20} />
               Start Free Trial (14 Days)
               <FaArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
@@ -387,7 +230,7 @@ const PlatformFeaturesPage = () => {
                 icon: <FaLaptopCode size={24} />, 
                 label: "Problems Solved", 
                 value: `${(stats.problemsSolved / 1000000).toFixed(1)}M+`,
-                color: "text-emerald-500"
+                color: "text-emerald-900 dark:text-emerald-700"
               },
               { 
                 icon: <UsersIcon size={24} />, 
@@ -439,7 +282,7 @@ const PlatformFeaturesPage = () => {
       <div className="relative px-6 sm:px-12 max-w-7xl mx-auto mb-20 z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-black dark:text-white">
-            Powerful Features for <span className="text-emerald-600 dark:text-emerald-400">Next-Level</span> Learning
+            Powerful Features for <span className="text-emerald-900 dark:text-emerald-700">Next-Level</span> Learning
           </h2>
           <p className="text-black/70 dark:text-white/70 max-w-2xl mx-auto">
             Our platform combines cutting-edge technology with proven learning methodologies
@@ -454,7 +297,7 @@ const PlatformFeaturesPage = () => {
               onClick={() => setActiveFeature(index)}
               className={`px-6 py-3 rounded-xl font-medium transition-all ${
                 activeFeature === index
-                  ? "bg-gradient-to-r from-[#021510] to-emerald-700 text-white shadow-lg"
+                  ? "bg-gradient-to-r from-emerald-900 to-emerald-900 dark:from-emerald-700 dark:to-emerald-700 text-white shadow-lg"
                   : "bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
               }`}
             >
@@ -487,7 +330,7 @@ const PlatformFeaturesPage = () => {
                     </span>
                   ))}
                 </div>
-                <button className="group flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-[#021510] to-emerald-700 text-white font-semibold hover:shadow-lg transition">
+                <button className="group flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-emerald-900 to-emerald-900 dark:from-emerald-700 dark:to-emerald-700 text-white font-semibold hover:shadow-lg transition">
                   Explore Feature
                   <FaArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -498,7 +341,7 @@ const PlatformFeaturesPage = () => {
                     {[1, 2, 3].map((i) => (
                       <div key={i} className="flex items-center justify-between p-3 bg-white/50 dark:bg-white/5 rounded-lg">
                         <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                          <div className="w-2 h-2 rounded-full bg-emerald-900 dark:bg-emerald-700" />
                           <span className="font-medium">Feature Example {i}</span>
                         </div>
                         <div className="text-sm text-black/60 dark:text-white/60">Active</div>
@@ -530,7 +373,7 @@ const PlatformFeaturesPage = () => {
               <div className="space-y-2 mb-6">
                 {feature.stats.map((stat, idx) => (
                   <div key={idx} className="flex items-center gap-2 text-sm">
-                    <FaCheckCircle className="text-emerald-500" size={12} />
+                    <FaCheckCircle className="text-emerald-900 dark:text-emerald-700" size={12} />
                     <span className="text-black/60 dark:text-white/60">{stat}</span>
                   </div>
                 ))}
@@ -547,7 +390,7 @@ const PlatformFeaturesPage = () => {
       <div className="relative px-6 sm:px-12 max-w-7xl mx-auto mb-20 z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4 text-black dark:text-white">
-            Everything Else You <span className="text-emerald-600 dark:text-emerald-400">Need</span>
+            Everything Else You <span className="text-emerald-900 dark:text-emerald-700">Need</span>
           </h2>
           <p className="text-black/70 dark:text-white/70 max-w-2xl mx-auto">
             Additional tools and features to support your entire learning journey
@@ -574,7 +417,7 @@ const PlatformFeaturesPage = () => {
       <div className="relative px-6 sm:px-12 max-w-7xl mx-auto mb-20 z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4 text-black dark:text-white">
-            <span className="text-emerald-600 dark:text-emerald-400">Upcoming</span> Events & Contests
+            <span className="text-emerald-900 dark:text-emerald-700">Upcoming</span> Events & Contests
           </h2>
           <p className="text-black/70 dark:text-white/70 max-w-2xl mx-auto">
             Join exciting coding challenges and compete with developers worldwide
@@ -589,9 +432,9 @@ const PlatformFeaturesPage = () => {
             >
               <div className="flex items-center justify-between mb-4">
                 <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                  event.difficulty === "Easy" ? "bg-green-500/20 text-green-700 dark:text-green-300" :
-                  event.difficulty === "Medium" ? "bg-yellow-500/20 text-yellow-700 dark:text-yellow-300" :
-                  "bg-red-500/20 text-red-700 dark:text-red-300"
+                  event.difficulty === "Easy" ? "bg-green-500/20 text-green-900 dark:text-green-700" :
+                  event.difficulty === "Medium" ? "bg-yellow-500/20 text-yellow-900 dark:text-yellow-700" :
+                  "bg-red-500/20 text-red-900 dark:text-red-700"
                 }`}>
                   {event.difficulty}
                 </span>
@@ -600,7 +443,7 @@ const PlatformFeaturesPage = () => {
               <h4 className="text-xl font-bold mb-3 text-black dark:text-white">{event.title}</h4>
               <div className="flex items-center justify-between text-sm mb-4">
                 <span className="text-black/60 dark:text-white/60">{event.participants} participants</span>
-                <span className="font-bold text-emerald-600 dark:text-emerald-400">Prize: {event.prize}</span>
+                <span className="font-bold text-emerald-900 dark:text-emerald-700">Prize: {event.prize}</span>
               </div>
               <button className="w-full py-3 rounded-lg bg-black/5 dark:bg-white/10 text-black dark:text-white font-semibold hover:bg-black/10 dark:hover:bg-white/20 transition">
                 Register Now
@@ -610,11 +453,11 @@ const PlatformFeaturesPage = () => {
         </div>
       </div>
 
-      {/* TESTIMONIALS */}
-      <div className="relative px-6 sm:px-12 max-w-7xl mx-auto mb-20 z-10">
+      {/* TESTIMONIALS - Currently commented out */}
+      {/* <div className="relative px-6 sm:px-12 max-w-7xl mx-auto mb-20 z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4 text-black dark:text-white">
-            Loved by <span className="text-emerald-600 dark:text-emerald-400">Developers</span> Worldwide
+            Loved by <span className="text-emerald-900 dark:text-emerald-700">Developers</span> Worldwide
           </h2>
           <p className="text-black/70 dark:text-white/70 max-w-2xl mx-auto">
             See what our community has to say about their experience
@@ -634,7 +477,7 @@ const PlatformFeaturesPage = () => {
               </div>
               <p className="text-black/70 dark:text-white/70 mb-6 italic">"{testimonial.content}"</p>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-500 to-blue-500 flex items-center justify-center text-white font-bold">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-900 to-emerald-900 dark:from-emerald-700 dark:to-emerald-700 flex items-center justify-center text-white font-bold">
                   {testimonial.avatar}
                 </div>
                 <div>
@@ -645,13 +488,13 @@ const PlatformFeaturesPage = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
-      {/* CTA SECTION */}
-      <div className="relative px-6 sm:px-12 mb-20 z-10">
+      {/* CTA SECTION - Currently commented out */}
+      {/* <div className="relative px-6 sm:px-12 mb-20 z-10">
         <div className="relative overflow-hidden max-w-6xl mx-auto rounded-3xl">
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-blue-500/20 to-purple-500/20 blur-3xl" />
-          <div className="relative bg-gradient-to-r from-[#021510] to-emerald-900 dark:from-emerald-900/80 dark:to-emerald-950/80 p-12 rounded-3xl text-center border border-emerald-500/20">
+          <div className="relative bg-gradient-to-r from-emerald-900 to-emerald-900 dark:from-emerald-700 dark:to-emerald-700 p-12 rounded-3xl text-center border border-emerald-500/20">
             <div className="max-w-3xl mx-auto">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white text-sm font-medium mb-6">
                 <FaBolt size={14} />
@@ -680,7 +523,7 @@ const PlatformFeaturesPage = () => {
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="group flex items-center justify-center gap-3 px-10 py-4 rounded-xl bg-white text-[#021510] font-bold hover:bg-emerald-50 hover:scale-105 transition-all">
+                <button className="group flex items-center justify-center gap-3 px-10 py-4 rounded-xl bg-white text-emerald-900 dark:text-emerald-700 font-bold hover:bg-emerald-50 hover:scale-105 transition-all">
                   <FaPlayCircle size={20} />
                   Start 14-Day Free Trial
                   <FaArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
@@ -696,7 +539,7 @@ const PlatformFeaturesPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

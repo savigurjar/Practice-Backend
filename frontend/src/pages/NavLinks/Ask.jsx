@@ -175,7 +175,7 @@ function Ask() {
           
           {/* Neural Network Animation */}
           <div className="absolute inset-0 hidden dark:block">
-            <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-emerald-600 rounded-full animate-ping"></div>
+            <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-emerald-400 rounded-full animate-ping"></div>
             <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-emerald-500 rounded-full animate-ping delay-300"></div>
             <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-emerald-400 rounded-full animate-ping delay-700"></div>
           </div>
@@ -185,29 +185,29 @@ function Ask() {
               {/* AI Icon with Animated Rings */}
               <div className="relative mb-8">
                 {/* Outer Ring */}
-                <div className="w-24 h-24 border-4 border-emerald-900/20 rounded-full dark:border-emerald-600/20"></div>
+                <div className="w-24 h-24 border-4 border-emerald-900/20 rounded-full dark:border-emerald-400/20"></div>
                 
                 {/* Middle Ring */}
-                <div className="absolute inset-4 w-16 h-16 border-4 border-emerald-900/30 rounded-full animate-spin dark:border-emerald-600/30">
-                  <div className="absolute -top-2 left-1/2 w-3 h-3 bg-emerald-900 rounded-full transform -translate-x-1/2 dark:bg-emerald-600"></div>
+                <div className="absolute inset-4 w-16 h-16 border-4 border-emerald-900/30 rounded-full animate-spin dark:border-emerald-400/30">
+                  <div className="absolute -top-2 left-1/2 w-3 h-3 bg-emerald-900 rounded-full transform -translate-x-1/2 dark:bg-emerald-400"></div>
                 </div>
                 
                 {/* Inner Core */}
                 <div className="absolute inset-8 flex items-center justify-center">
                   <div className="relative">
-                    <Brain className="w-10 h-10 text-emerald-900 dark:text-emerald-600 animate-pulse" />
-                    <Sparkles className="absolute -top-1 -right-1 w-4 h-4 text-yellow-600 animate-bounce dark:text-yellow-500" />
+                    <Brain className="w-10 h-10 text-emerald-900 dark:text-emerald-400 animate-pulse" />
+                    <Sparkles className="absolute -top-1 -right-1 w-4 h-4 text-yellow-400 animate-bounce dark:text-yellow-500" />
                   </div>
                 </div>
               </div>
               
               {/* Title */}
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-900 to-teal-900 bg-clip-text text-transparent dark:from-emerald-600 dark:to-teal-600">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-900 to-teal-900 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-400">
                 Neural AI Mentor
               </h1>
               
               {/* Subtitle */}
-              <p className="mt-4 text-lg font-medium text-emerald-900 dark:text-emerald-600">
+              <p className="mt-4 text-lg font-medium text-emerald-900 dark:text-emerald-400">
                 Loading Intelligent Assistant
               </p>
               
@@ -215,41 +215,41 @@ function Ask() {
               <div className="mt-8 w-full space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-emerald-900 dark:text-emerald-600">Initializing Neural Network</span>
-                    <span className="font-medium text-emerald-900 dark:text-emerald-600">85%</span>
+                    <span className="text-emerald-900 dark:text-emerald-400">Initializing Neural Network</span>
+                    <span className="font-medium text-emerald-900 dark:text-emerald-400">85%</span>
                   </div>
                   <div className="w-full h-2 bg-emerald-100 dark:bg-emerald-700/30 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-emerald-900 to-teal-900 rounded-full animate-progress dark:from-emerald-600 dark:to-teal-600" style={{width: '85%'}}></div>
+                    <div className="h-full bg-gradient-to-r from-emerald-900 to-teal-900 rounded-full animate-progress dark:from-emerald-400 dark:to-teal-400" style={{width: '85%'}}></div>
                   </div>
                 </div>
                 
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-emerald-900 dark:text-emerald-600">Loading Knowledge Base</span>
-                    <span className="font-medium text-emerald-900 dark:text-emerald-600">72%</span>
+                    <span className="text-emerald-900 dark:text-emerald-400">Loading Knowledge Base</span>
+                    <span className="font-medium text-emerald-900 dark:text-emerald-400">72%</span>
                   </div>
                   <div className="w-full h-2 bg-emerald-100 dark:bg-emerald-700/30 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-emerald-900 to-teal-900 rounded-full animate-progress delay-200 dark:from-emerald-600 dark:to-teal-600" style={{width: '72%'}}></div>
+                    <div className="h-full bg-gradient-to-r from-emerald-900 to-teal-900 rounded-full animate-progress delay-200 dark:from-emerald-400 dark:to-teal-400" style={{width: '72%'}}></div>
                   </div>
                 </div>
               </div>
               
               {/* AI Status Message */}
-              <div className="mt-8 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-700/10 dark:to-teal-700/10 rounded-lg border border-emerald-200 dark:border-emerald-600/30">
+              <div className="mt-8 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-700/10 dark:to-teal-700/10 rounded-lg border border-emerald-200 dark:border-emerald-400/30">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-900 to-teal-900 flex items-center justify-center dark:from-emerald-600 dark:to-teal-600">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-900 to-teal-900 flex items-center justify-center dark:from-emerald-400 dark:to-teal-400">
                     <Brain className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center space-x-2">
-                      <span className="font-medium text-emerald-900 dark:text-emerald-600">AI System</span>
+                      <span className="font-medium text-emerald-900 dark:text-emerald-400">AI System</span>
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-emerald-900 rounded-full animate-bounce dark:bg-emerald-600"></div>
-                        <div className="w-2 h-2 bg-emerald-900 rounded-full animate-bounce delay-150 dark:bg-emerald-600"></div>
-                        <div className="w-2 h-2 bg-emerald-900 rounded-full animate-bounce delay-300 dark:bg-emerald-600"></div>
+                        <div className="w-2 h-2 bg-emerald-900 rounded-full animate-bounce dark:bg-emerald-400"></div>
+                        <div className="w-2 h-2 bg-emerald-900 rounded-full animate-bounce delay-150 dark:bg-emerald-400"></div>
+                        <div className="w-2 h-2 bg-emerald-900 rounded-full animate-bounce delay-300 dark:bg-emerald-400"></div>
                       </div>
                     </div>
-                    <p className="mt-1 text-sm text-emerald-900 dark:text-emerald-600">
+                    <p className="mt-1 text-sm text-emerald-900 dark:text-emerald-400">
                       Preparing your personalized learning environment...
                     </p>
                   </div>
@@ -287,7 +287,7 @@ function Ask() {
           {[...Array(12)].map((_, i) => (
             <div
               key={i}
-              className="absolute w-1 h-1 bg-emerald-600/50 rounded-full dark:bg-emerald-600/50"
+              className="absolute w-1 h-1 bg-emerald-400/50 rounded-full dark:bg-emerald-400/50"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
@@ -305,47 +305,47 @@ function Ask() {
             {/* AI Stats Card */}
             <div className="bg-white dark:bg-black/5 border border-emerald-200 dark:border-emerald-700/30 rounded-2xl p-4 backdrop-blur">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-900 to-teal-900 flex items-center justify-center dark:from-emerald-600 dark:to-teal-600">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-900 to-teal-900 flex items-center justify-center dark:from-emerald-400 dark:to-teal-400">
                   <Brain className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-emerald-900 dark:text-emerald-600">AI Mentor v2.5</h3>
-                  <p className="text-xs text-emerald-900 dark:text-emerald-600">Online</p>
+                  <h3 className="font-bold text-emerald-900 dark:text-emerald-400">AI Mentor v2.5</h3>
+                  <p className="text-xs text-emerald-900 dark:text-emerald-400">Online</p>
                 </div>
               </div>
               
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Tokens Used</span>
-                  <span className="font-medium text-emerald-900 dark:text-emerald-600">1,248</span>
+                  <span className="text-sm text-gray-400 dark:text-gray-400">Tokens Used</span>
+                  <span className="font-medium text-emerald-900 dark:text-emerald-400">1,248</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Response Time</span>
-                  <span className="font-medium text-emerald-900 dark:text-emerald-600">1.2s</span>
+                  <span className="text-sm text-gray-400 dark:text-gray-400">Response Time</span>
+                  <span className="font-medium text-emerald-900 dark:text-emerald-400">1.2s</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Accuracy</span>
-                  <span className="font-medium text-emerald-900 dark:text-emerald-600">98.5%</span>
+                  <span className="text-sm text-gray-400 dark:text-gray-400">Accuracy</span>
+                  <span className="font-medium text-emerald-900 dark:text-emerald-400">98.5%</span>
                 </div>
               </div>
             </div>
 
             {/* Quick Actions */}
             <div className="bg-white dark:bg-black/5 border border-emerald-200 dark:border-emerald-700/30 rounded-2xl p-4 backdrop-blur">
-              <h4 className="font-semibold text-emerald-900 dark:text-emerald-600 mb-3">Quick Actions</h4>
+              <h4 className="font-semibold text-emerald-900 dark:text-emerald-400 mb-3">Quick Actions</h4>
               <div className="space-y-2">
                 <button 
                   onClick={clearChat}
-                  className="w-full flex items-center space-x-2 px-3 py-2 text-sm rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-700/20 transition-colors text-emerald-900 dark:text-emerald-600"
+                  className="w-full flex items-center space-x-2 px-3 py-2 text-sm rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-700/20 transition-colors text-emerald-900 dark:text-emerald-400"
                 >
                   <RefreshCw className="w-4 h-4" />
                   <span>New Chat</span>
                 </button>
-                <button className="w-full flex items-center space-x-2 px-3 py-2 text-sm rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-700/20 transition-colors text-emerald-900 dark:text-emerald-600">
+                <button className="w-full flex items-center space-x-2 px-3 py-2 text-sm rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-700/20 transition-colors text-emerald-900 dark:text-emerald-400">
                   <Copy className="w-4 h-4" />
                   <span>Export Chat</span>
                 </button>
-                <button className="w-full flex items-center space-x-2 px-3 py-2 text-sm rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-700/20 transition-colors text-emerald-900 dark:text-emerald-600">
+                <button className="w-full flex items-center space-x-2 px-3 py-2 text-sm rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-700/20 transition-colors text-emerald-900 dark:text-emerald-400">
                   <Zap className="w-4 h-4" />
                   <span>Toggle Dark Mode</span>
                 </button>
@@ -354,12 +354,12 @@ function Ask() {
 
             {/* Learning Topics */}
             <div className="bg-white dark:bg-black/5 border border-emerald-200 dark:border-emerald-700/30 rounded-2xl p-4 backdrop-blur">
-              <h4 className="font-semibold text-emerald-900 dark:text-emerald-600 mb-3">Topics</h4>
+              <h4 className="font-semibold text-emerald-900 dark:text-emerald-400 mb-3">Topics</h4>
               <div className="flex flex-wrap gap-2">
                 {["DSA", "React", "Node.js", "Python", "SQL", "System Design", "DevOps", "Algorithms"].map((topic) => (
                   <span 
                     key={topic}
-                    className="px-2 py-1 text-xs rounded-full bg-emerald-100 text-emerald-900 dark:bg-emerald-600/10 dark:text-emerald-600 border border-emerald-200 dark:border-emerald-700"
+                    className="px-2 py-1 text-xs rounded-full bg-emerald-100 text-emerald-900 dark:bg-emerald-400/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700"
                   >
                     {topic}
                   </span>
@@ -374,21 +374,21 @@ function Ask() {
             <div className="px-6 py-4 border-b border-emerald-200 dark:border-emerald-700/30 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-700/10 dark:to-teal-700/10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-900 to-teal-900 flex items-center justify-center dark:from-emerald-600 dark:to-teal-600">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-900 to-teal-900 flex items-center justify-center dark:from-emerald-400 dark:to-teal-400">
                     <Brain className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-extrabold text-emerald-900 dark:text-emerald-600">
+                    <h2 className="text-lg font-extrabold text-emerald-900 dark:text-emerald-400">
                       Neural AI Engineering Mentor
                     </h2>
-                    <p className="text-sm text-emerald-900 dark:text-emerald-600">
+                    <p className="text-sm text-emerald-900 dark:text-emerald-400">
                       Real-time DSA • Web Dev • System Design Guidance
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-emerald-900 rounded-full animate-pulse dark:bg-emerald-600"></div>
-                  <span className="text-sm text-emerald-900 dark:text-emerald-600">Active</span>
+                  <div className="w-2 h-2 bg-emerald-900 rounded-full animate-pulse dark:bg-emerald-400"></div>
+                  <span className="text-sm text-emerald-900 dark:text-emerald-400">Active</span>
                 </div>
               </div>
             </div>
@@ -405,7 +405,7 @@ function Ask() {
               ].map((tip) => (
                 <span
                   key={tip}
-                  className="px-3 py-1.5 text-xs rounded-full bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-900 dark:from-emerald-600/10 dark:to-teal-600/10 dark:text-emerald-600 border border-emerald-200 dark:border-emerald-700/30"
+                  className="px-3 py-1.5 text-xs rounded-full bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-900 dark:from-emerald-400/10 dark:to-teal-400/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700/30"
                 >
                   {tip}
                 </span>
@@ -414,13 +414,13 @@ function Ask() {
 
             {/* Quick Prompts */}
             <div className="px-6 py-3 border-b border-emerald-100 dark:border-emerald-700/20 bg-emerald-50/50 dark:bg-emerald-700/5">
-              <p className="text-xs font-medium text-emerald-900 dark:text-emerald-600 mb-2">Try asking:</p>
+              <p className="text-xs font-medium text-emerald-900 dark:text-emerald-400 mb-2">Try asking:</p>
               <div className="flex flex-wrap gap-2">
                 {prompts.map((prompt, index) => (
                   <button
                     key={index}
                     onClick={() => handleQuickPrompt(prompt)}
-                    className="px-3 py-1.5 text-xs rounded-full bg-white dark:bg-black/20 text-emerald-900 dark:text-emerald-600 border border-emerald-200 dark:border-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-700/20 transition-colors"
+                    className="px-3 py-1.5 text-xs rounded-full bg-white dark:bg-black/20 text-emerald-900 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-700/20 transition-colors"
                   >
                     {prompt}
                   </button>
@@ -436,7 +436,7 @@ function Ask() {
                   className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} items-start space-x-3`}
                 >
                   {msg.role === "model" && (
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-900 to-teal-900 flex items-center justify-center dark:from-emerald-600 dark:to-teal-600">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-900 to-teal-900 flex items-center justify-center dark:from-emerald-400 dark:to-teal-400">
                       <Brain className="w-5 h-5 text-white" />
                     </div>
                   )}
@@ -445,7 +445,7 @@ function Ask() {
                     <div
                       className={`px-4 py-3 rounded-xl text-sm leading-relaxed whitespace-pre-wrap
                         ${msg.role === "user"
-                          ? "bg-gradient-to-r from-emerald-900 to-teal-900 text-white rounded-br-none dark:from-emerald-600 dark:to-teal-600"
+                          ? "bg-gradient-to-r from-emerald-900 to-teal-900 text-white rounded-br-none dark:from-emerald-400 dark:to-teal-400"
                           : "bg-emerald-50 dark:bg-emerald-700/20 text-emerald-900 dark:text-emerald-100 rounded-bl-none border border-emerald-100 dark:border-emerald-700/30"
                         }`}
                     >
@@ -458,16 +458,16 @@ function Ask() {
                         <>
                           <button
                             onClick={() => copyToClipboard(msg.parts[0].text)}
-                            className="text-xs text-emerald-900 dark:text-emerald-600 hover:text-emerald-700 dark:hover:text-emerald-500 transition-colors flex items-center space-x-1"
+                            className="text-xs text-emerald-900 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-500 transition-colors flex items-center space-x-1"
                           >
                             <Copy className="w-3 h-3" />
                             <span>Copy</span>
                           </button>
-                          <button className="text-xs text-emerald-900 dark:text-emerald-600 hover:text-emerald-700 dark:hover:text-emerald-500 transition-colors flex items-center space-x-1">
+                          <button className="text-xs text-emerald-900 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-500 transition-colors flex items-center space-x-1">
                             <ThumbsUp className="w-3 h-3" />
                             <span>Helpful</span>
                           </button>
-                          <button className="text-xs text-emerald-900 dark:text-emerald-600 hover:text-emerald-700 dark:hover:text-emerald-500 transition-colors flex items-center space-x-1">
+                          <button className="text-xs text-emerald-900 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-500 transition-colors flex items-center space-x-1">
                             <ThumbsDown className="w-3 h-3" />
                             <span>Not Helpful</span>
                           </button>
@@ -487,16 +487,16 @@ function Ask() {
               {/* AI Typing Indicator */}
               {isTyping && (
                 <div className="flex justify-start items-start space-x-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-900 to-teal-900 flex items-center justify-center dark:from-emerald-600 dark:to-teal-600">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-900 to-teal-900 flex items-center justify-center dark:from-emerald-400 dark:to-teal-400">
                     <Brain className="w-5 h-5 text-white" />
                   </div>
                   <div className="bg-emerald-50 dark:bg-emerald-700/20 px-4 py-3 rounded-xl rounded-bl-none border border-emerald-100 dark:border-emerald-700/30">
                     <div className="flex items-center space-x-2">
-                      <span className="text-sm font-medium text-emerald-900 dark:text-emerald-600">AI is thinking</span>
+                      <span className="text-sm font-medium text-emerald-900 dark:text-emerald-400">AI is thinking</span>
                       <div className="flex gap-1">
-                        <span className="w-2 h-2 bg-emerald-900 rounded-full animate-bounce dark:bg-emerald-600"></span>
-                        <span className="w-2 h-2 bg-emerald-900 rounded-full animate-bounce delay-150 dark:bg-emerald-600"></span>
-                        <span className="w-2 h-2 bg-emerald-900 rounded-full animate-bounce delay-300 dark:bg-emerald-600"></span>
+                        <span className="w-2 h-2 bg-emerald-900 rounded-full animate-bounce dark:bg-emerald-400"></span>
+                        <span className="w-2 h-2 bg-emerald-900 rounded-full animate-bounce delay-150 dark:bg-emerald-400"></span>
+                        <span className="w-2 h-2 bg-emerald-900 rounded-full animate-bounce delay-300 dark:bg-emerald-400"></span>
                       </div>
                     </div>
                   </div>
@@ -508,7 +508,7 @@ function Ask() {
                 <div className="flex justify-center pt-4">
                   <button
                     onClick={regenerateResponse}
-                    className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-700/20 text-emerald-900 dark:text-emerald-600 border border-emerald-200 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-700/30 transition-colors"
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-700/20 text-emerald-900 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-700/30 transition-colors"
                   >
                     <RefreshCw className="w-4 h-4" />
                     <span className="text-sm font-medium">Regenerate Response</span>
@@ -528,14 +528,14 @@ function Ask() {
                 <input
                   placeholder="Ask about DSA, React, Node.js, System Design..."
                   {...register("message", { required: true, minLength: 2 })}
-                  className="w-full px-4 py-3 pl-10 rounded-xl text-sm bg-emerald-50 dark:bg-emerald-700/10 border border-emerald-300 dark:border-emerald-700/30 focus:outline-none focus:ring-2 focus:ring-emerald-900 focus:border-transparent dark:focus:ring-emerald-600 text-emerald-900 dark:text-emerald-100 placeholder-emerald-900/70 dark:placeholder-emerald-600/50"
+                  className="w-full px-4 py-3 pl-10 rounded-xl text-sm bg-emerald-50 dark:bg-emerald-700/10 border border-emerald-300 dark:border-emerald-700/30 focus:outline-none focus:ring-2 focus:ring-emerald-900 focus:border-transparent dark:focus:ring-emerald-400 text-emerald-900 dark:text-emerald-100 placeholder-emerald-900/70 dark:placeholder-emerald-400/50"
                 />
-                <MessageSquare className="absolute left-3 top-3.5 w-4 h-4 text-emerald-900 dark:text-emerald-600" />
+                <MessageSquare className="absolute left-3 top-3.5 w-4 h-4 text-emerald-900 dark:text-emerald-400" />
               </div>
 
               <button
                 disabled={errors.message || isTyping}
-                className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-900 to-teal-900 text-white flex items-center justify-center hover:from-emerald-800 hover:to-teal-800 dark:from-emerald-600 dark:to-teal-600 dark:hover:from-emerald-500 dark:hover:to-teal-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg"
+                className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-900 to-teal-900 text-white flex items-center justify-center hover:from-emerald-800 hover:to-teal-800 dark:from-emerald-400 dark:to-teal-400 dark:hover:from-emerald-500 dark:hover:to-teal-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg"
               >
                 <Send size={20} />
               </button>
@@ -544,15 +544,15 @@ function Ask() {
             {/* Footer */}
             <div className="px-6 py-2 border-t border-emerald-200 dark:border-emerald-700/30 bg-emerald-50/50 dark:bg-emerald-700/5">
               <div className="flex items-center justify-between text-xs">
-                <div className="flex items-center space-x-3 text-emerald-900 dark:text-emerald-600">
+                <div className="flex items-center space-x-3 text-emerald-900 dark:text-emerald-400">
                   <div className="flex items-center space-x-1">
-                    <div className="w-2 h-2 bg-emerald-900 rounded-full animate-pulse dark:bg-emerald-600"></div>
+                    <div className="w-2 h-2 bg-emerald-900 rounded-full animate-pulse dark:bg-emerald-400"></div>
                     <span>AI System • Online</span>
                   </div>
-                  <span className="text-emerald-900/70 dark:text-emerald-600/70">•</span>
+                  <span className="text-emerald-900/70 dark:text-emerald-400/70">•</span>
                   <span>{messages.length} messages</span>
                 </div>
-                <button className="text-emerald-900 dark:text-emerald-600 hover:text-emerald-700 dark:hover:text-emerald-500 transition-colors">
+                <button className="text-emerald-900 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-500 transition-colors">
                   <RefreshCw className="w-4 h-4" />
                 </button>
               </div>

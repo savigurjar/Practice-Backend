@@ -263,7 +263,7 @@ const ProblemsPage = () => {
               {/* Title */}
               <NavLink
                 to={`/problem/${dailyProblem._id}`}
-                className="text-xl font-semibold hover:underline hover:text-emerald-400 transition"
+                className="text-xl font-semibold hover:underline hover:text-emerald-800 transition"
               >
                 {dailyProblem.title}
               </NavLink>
@@ -312,7 +312,7 @@ const ProblemsPage = () => {
                 <NavLink
                   to={`/problem/${dailyProblem._id}`}
                   className="px-6 py-2 rounded-lg font-semibold 
-          bg-emerald-600 hover:bg-emerald-700 
+          bg-emerald-900 hover:bg-emerald-800 
           dark:bg-emerald-700 dark:hover:bg-emerald-800
           transition"
                 >
@@ -437,7 +437,7 @@ const ProblemsPage = () => {
                     <td>
                       <NavLink
                         to={`/problem/${p._id}`}
-                        className="font-medium hover:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
+                        className="font-medium hover:text-emerald-900 dark:hover:text-emerald-400 transition-colors"
                       >
                         {p.title}
                       </NavLink>
