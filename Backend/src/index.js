@@ -47,7 +47,7 @@ app.get('/',(req,res)=>{
 })
 
 // Serve React frontend (for production build)
-// app.use(express.static(path.join(__dirname, "client/build")));
+app.use(express.static(path.join(__dirname, "client/build")));
 
 // Catch-all route for React Router
 // app.get("*", (req, res) => {
