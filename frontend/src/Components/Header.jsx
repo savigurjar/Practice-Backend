@@ -162,7 +162,7 @@
 
 
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { Menu, X, LogOut, User } from "lucide-react";
 import { ModeToggle } from "./modeToggle";
 import { useDispatch, useSelector } from "react-redux";
