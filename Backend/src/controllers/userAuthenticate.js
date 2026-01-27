@@ -20,22 +20,67 @@ const cookieOptions = {
 };
 
 
-const register = async (req, res) => {
-  try {
-    await validUser(req.body);
+// const register = async (req, res) => {
+//   try {
+//     await validUser(req.body);
 
-      delete req.body.confirmPassword; 
+//       delete req.body.confirmPassword; 
 
-    req.body.password = await bcrypt.hash(req.body.password, 10);
-    req.body.role = "user";
+//     req.body.password = await bcrypt.hash(req.body.password, 10);
+//     req.body.role = "user";
    
 
-    const people = await User.create(req.body);
+//     const people = await User.create(req.body);
+//     const reply = {
+//       firstName: people.firstName,
+//       emailId: people.emailId,
+//       _id: people._id
+//     }
+
+//     const token = jwt.sign(
+//       { _id: people._id, role: people.role, emailId: people.emailId },
+//       process.env.JWT_KEY,
+//       { expiresIn: "1d" }
+//     );
+
+//     // res.cookie("token", token, {
+//     //     httpOnly: true,
+//     //     secure: process.env.NODE_ENV === "production",
+//     //     maxAge: 24 * 60 * 60 * 1000
+//     // });
+//     res.cookie("token", token, cookieOptions);
+
+//     res.status(201).json({
+//       user: reply,
+//       message: "User created successfully"
+//     });
+//   } catch (err) {
+//     console.log(err)
+//     res.status(400).json({ error: err.message });
+//   }
+// };
+
+const register = async (req, res) => {
+  try {
+    // pick only required fields
+    const { firstName, emailId, password } = req.body;
+
+    await validUser({ firstName, emailId, password });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const people = await User.create({
+      firstName,
+      emailId,
+      password: hashedPassword,
+      role: "user"
+    });
+
     const reply = {
       firstName: people.firstName,
       emailId: people.emailId,
       _id: people._id
-    }
+    };
 
     const token = jwt.sign(
       { _id: people._id, role: people.role, emailId: people.emailId },
@@ -43,19 +88,15 @@ const register = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    // res.cookie("token", token, {
-    //     httpOnly: true,
-    //     secure: process.env.NODE_ENV === "production",
-    //     maxAge: 24 * 60 * 60 * 1000
-    // });
     res.cookie("token", token, cookieOptions);
 
     res.status(201).json({
       user: reply,
       message: "User created successfully"
     });
+
   } catch (err) {
-    console.log(err)
+    console.log("REGISTER ERROR:", err.message, req.body);
     res.status(400).json({ error: err.message });
   }
 };
