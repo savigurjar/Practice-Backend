@@ -21,14 +21,37 @@ const discussRouter = require("./routes/discussRoute");
       
 
 // Middleware
+// app.use(cors({
+    
+//     origin: "https://codeclan.onrender.com" || "http://localhost:5173", // frontend URL
+//     // origin: 'http://localhost:5173', // frontend URL
+//     credentials: true,
+// }));
+
+const allowedOrigins = [
+  "https://codeclan.onrender.com",
+  "http://localhost:5173",
+];
+
 app.use(cors({
-    // origin: "https://codeclan-sigma.vercel.app", // frontend URL
-    origin: "https://codeclan.onrender.com", // frontend URL
-    // origin: 'http://localhost:5173', // frontend URL
-    credentials: true,
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // allow server-to-server / Postman
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(null, false); // IMPORTANT: don't throw
+  },
+  credentials: true,
 }));
+
+
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(express.urlencoded({ extended: true }));
+
 
 // API Routes
 app.use("/user", authRouter);
@@ -46,8 +69,11 @@ app.get('/',(req,res)=>{
     })
 })
 
+
+
+
 // Serve React frontend (for production build)
-app.use(express.static(path.join(__dirname, "client/build")));
+// app.use(express.static(path.join(__dirname, "client/build")));
 
 // Catch-all route for React Router
 // app.get("*", (req, res) => {
