@@ -95,11 +95,11 @@ function Header() {
               </>
             ) : (
               <div className="relative group">
-                <button className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out">
+                <button className="group flex items-center gap-2 text-sm text-emerald-900 dark:text-gray-200 px-3 py-2 rounded-md hover:bg-emerald-900 hover:text-white dark:hover:bg-gray-800 transition-all duration-300 ease-in-out">
                   <User size={16} />
-                  {user?.firstName || "User"}
+                  <span className="font-semibold">{user?.firstName || "User"}</span>
                   {user?.role === "admin" && (
-                    <Shield size={14} className="text-emerald-900 dark:text-emerald-400 ml-1" />
+                    <Shield size={14} className="text-emerald-900 group-hover:text-white dark:text-emerald-400 ml-1 transition-colors duration-300 ease-in-out" />
                   )}
                 </button>
 
@@ -162,8 +162,8 @@ function Header() {
           <div className="pt-4 border-t dark:border-gray-800">
             {!isAuthenticated ? (
               <div className="flex flex-col gap-2">
-                <Link 
-                  to="/login" 
+                <Link
+                  to="/login"
                   onClick={() => setIsOpen(false)}
                   className="px-4 py-2 rounded-md text-sm font-medium text-emerald-900 hover:bg-emerald-50 dark:text-emerald-50 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out text-center"
                 >
@@ -179,9 +179,9 @@ function Header() {
               </div>
             ) : (
               <>
-                 <div className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200">
+                <div className="flex items-center gap-2 px-4 py-2 text-emerald-900 dark:text-gray-200">
                   <User size={16} />
-                  <span>{user?.firstName || "User"}</span>
+                  <span className="font-semibold">{user?.firstName || "User"}</span>
                   {user?.role === "admin" && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-emerald-50 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100 rounded-full ml-2">
                       <Shield size={10} />
@@ -189,18 +189,18 @@ function Header() {
                     </span>
                   )}
                 </div>
-                <Link 
-                  to="/dashboard" 
-                  onClick={() => setIsOpen(false)} 
+                <Link
+                  to="/dashboard"
+                  onClick={() => setIsOpen(false)}
                   className="block text-gray-700 dark:text-gray-200 py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors duration-300 ease-in-out"
                 >
                   Dashboard
                 </Link>
 
                 {user?.role === "admin" && (
-                  <Link 
-                    to="/admin" 
-                    onClick={() => setIsOpen(false)} 
+                  <Link
+                    to="/admin"
+                    onClick={() => setIsOpen(false)}
                     className="flex items-center gap-2 text-gray-700 dark:text-gray-200 py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors duration-300 ease-in-out"
                   >
                     <Shield size={14} />
