@@ -202,7 +202,7 @@ function Ask() {
               </div>
               
               {/* Title */}
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-900 to-teal-900 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-400">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-900 to-teal-900 bg-clip-text text-transparent dark:from-emerald-400 dark:to-emerald-700">
                 Neural AI Mentor
               </h1>
               
@@ -219,7 +219,7 @@ function Ask() {
                     <span className="font-medium text-emerald-900 dark:text-emerald-400">85%</span>
                   </div>
                   <div className="w-full h-2 bg-emerald-100 dark:bg-emerald-700/30 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-emerald-900 to-teal-900 rounded-full animate-progress dark:from-emerald-400 dark:to-teal-400" style={{width: '85%'}}></div>
+                    <div className="h-full bg-gradient-to-r from-emerald-900 to-teal-900 rounded-full animate-progress dark:from-emerald-400 dark:to-emerald-700" style={{width: '85%'}}></div>
                   </div>
                 </div>
                 
@@ -229,7 +229,7 @@ function Ask() {
                     <span className="font-medium text-emerald-900 dark:text-emerald-400">72%</span>
                   </div>
                   <div className="w-full h-2 bg-emerald-100 dark:bg-emerald-700/30 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-emerald-900 to-teal-900 rounded-full animate-progress delay-200 dark:from-emerald-400 dark:to-teal-400" style={{width: '72%'}}></div>
+                    <div className="h-full bg-gradient-to-r from-emerald-900 to-teal-900 rounded-full animate-progress delay-200 dark:from-emerald-400 dark:to-emerald-700" style={{width: '72%'}}></div>
                   </div>
                 </div>
               </div>
@@ -535,7 +535,7 @@ function Ask() {
 
               <button
                 disabled={errors.message || isTyping}
-                className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-900 to-teal-900 text-white flex items-center justify-center hover:from-emerald-800 hover:to-teal-800 dark:from-emerald-400 dark:to-teal-400 dark:hover:from-emerald-500 dark:hover:to-teal-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg"
+                className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-900 to-teal-900 text-white flex items-center justify-center hover:from-emerald-800 hover:to-teal-800 dark:from-emerald-400 dark:to-emerald-700 dark:hover:from-emerald-500 dark:hover:to-emerald-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg"
               >
                 <Send size={20} />
               </button>
