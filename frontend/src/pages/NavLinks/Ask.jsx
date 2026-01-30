@@ -445,7 +445,7 @@ function Ask() {
                     <div
                       className={`px-4 py-3 rounded-xl text-sm leading-relaxed whitespace-pre-wrap
                         ${msg.role === "user"
-                          ? "bg-gradient-to-r from-emerald-900 to-teal-900 text-white rounded-br-none dark:from-emerald-400 dark:to-teal-400"
+                          ? "bg-gradient-to-r from-emerald-900 to-teal-900 text-white rounded-br-none dark:from-emerald-800 dark:to-emerald-700"
                           : "bg-emerald-50 dark:bg-emerald-700/20 text-emerald-900 dark:text-emerald-100 rounded-bl-none border border-emerald-100 dark:border-emerald-700/30"
                         }`}
                     >
@@ -477,7 +477,7 @@ function Ask() {
                   </div>
                   
                   {msg.role === "user" && (
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-700 to-teal-700 flex items-center justify-center dark:from-emerald-500 dark:to-teal-500">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-emerald-700 to-teal-700 flex items-center justify-center dark:from-emerald-800 dark:to-emerald-700">
                       <User className="w-5 h-5 text-white" />
                     </div>
                   )}
@@ -535,7 +535,7 @@ function Ask() {
 
               <button
                 disabled={errors.message || isTyping}
-                className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-900 to-teal-900 text-white flex items-center justify-center hover:from-emerald-800 hover:to-teal-800 dark:from-emerald-400 dark:to-emerald-700 dark:hover:from-emerald-500 dark:hover:to-emerald-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg"
+                className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-900 to-teal-900 text-white flex items-center justify-center hover:from-emerald-800 hover:to-teal-800 dark:from-emerald-800 dark:to-emerald-700 dark:hover:from-emerald-500 dark:hover:to-emerald-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg"
               >
                 <Send size={20} />
               </button>
