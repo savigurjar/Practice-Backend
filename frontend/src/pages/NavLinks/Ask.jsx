@@ -12,12 +12,12 @@ function Ask() {
       parts: [
         {
           text:
-            "Hi 👋 I'm your AI Software Engineering mentor.\n\n" +
-            "You can ask me about:\n" +
-            "• Data Structures & Algorithms\n" +
-            "• Web Development (Frontend / Backend)\n" +
-            "• System Design & Architecture\n\n" +
-            "Ask for hints, explanations, code reviews, or design guidance 🚀",
+            "Hi 👋 I'm your AI Software Engineering mentor." 
+            // "You can ask me about:\n" +
+            // "• Data Structures & Algorithms\n" +
+            // "• Web Development (Frontend / Backend)\n" +
+            // "• System Design & Architecture\n\n" +
+            // "Ask for hints, explanations, code reviews, or design guidance 🚀",
         },
       ],
     },
@@ -394,7 +394,7 @@ function Ask() {
             </div>
 
             {/* Guide Chips */}
-            <div className="px-6 py-3 border-b border-emerald-100 dark:border-emerald-700/20 bg-white dark:bg-black/5 flex flex-wrap gap-2">
+            <div className="px-6 py-2 border-b border-emerald-100 dark:border-emerald-700/20 bg-white dark:bg-black/5 flex flex-wrap gap-2">
               {[
                 "Ask for hints",
                 "Share your code",
@@ -413,7 +413,7 @@ function Ask() {
             </div>
 
             {/* Quick Prompts */}
-            <div className="px-6 py-3 border-b border-emerald-100 dark:border-emerald-700/20 bg-emerald-50/50 dark:bg-emerald-700/5">
+            <div className="px-6 py-2 border-b border-emerald-100 dark:border-emerald-700/20 bg-emerald-50/50 dark:bg-emerald-700/5">
               <p className="text-xs font-medium text-emerald-900 dark:text-emerald-400 mb-2">Try asking:</p>
               <div className="flex flex-wrap gap-2">
                 {prompts.map((prompt, index) => (
